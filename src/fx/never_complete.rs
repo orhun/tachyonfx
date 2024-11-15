@@ -1,6 +1,6 @@
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
-use crate::{CellFilter, CellIterator, Duration, EffectTimer};
+use crate::{CellFilter, Duration, EffectTimer};
 use crate::effect::Effect;
 use crate::widget::EffectSpan;
 use crate::shader::Shader;
@@ -24,10 +24,6 @@ impl Shader for NeverComplete {
     fn process(&mut self, duration: Duration, buf: &mut Buffer, area: Rect) -> Option<Duration> {
         self.effect.process(duration, buf, area);
         None
-    }
-
-    fn execute(&mut self, _alpha: f32, _area: Rect, _cell_iter: CellIterator) {
-
     }
 
     fn done(&self) -> bool                      { false }

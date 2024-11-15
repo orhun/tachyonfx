@@ -1,6 +1,6 @@
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
-use crate::{CellFilter, CellIterator, Duration, Effect, RefCount, Shader};
+use crate::{CellFilter, Duration, Effect, RefCount, Shader};
 use crate::widget::EffectSpan;
 
 #[derive(Clone)]
@@ -38,8 +38,6 @@ impl Shader for OffscreenBuffer {
 
         None
     }
-
-    fn execute(&mut self, _alpha: f32, _area: Rect, _cell_iter: CellIterator) {}
 
     fn done(&self) -> bool {
         self.fx.done()

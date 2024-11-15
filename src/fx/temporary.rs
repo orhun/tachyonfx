@@ -1,6 +1,6 @@
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
-use crate::{CellFilter, CellIterator, Duration};
+use crate::{CellFilter, Duration};
 use crate::effect::{Effect, IntoEffect};
 use crate::effect_timer::EffectTimer;
 use crate::widget::EffectSpan;
@@ -34,10 +34,6 @@ impl Shader for TemporaryEffect {
         let effect_area = self.effect.area().unwrap_or(area);
         self.effect.process(duration, buf, effect_area);
         remaining
-    }
-
-    fn execute(&mut self, _alpha: f32, _area: Rect, _cell_iter: CellIterator) {
-        // nothing to do
     }
 
     fn done(&self) -> bool {

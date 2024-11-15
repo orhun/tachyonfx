@@ -10,7 +10,7 @@ use crate::fx::{Direction, DirectionalVariance};
 use crate::interpolation::{Interpolatable, Interpolation};
 use crate::shader::Shader;
 use crate::CellFilter;
-use crate::{CellIterator, ColorMapper, Duration};
+use crate::{ColorMapper, Duration};
 
 #[derive(Clone)]
 pub struct SweepIn {
@@ -119,7 +119,6 @@ impl Shader for SweepIn {
 
         overflow
     }
-    fn execute(&mut self, _alpha: f32, _area: Rect, _cell_iter: CellIterator) {}
 
     fn done(&self) -> bool {
         self.timer.done()

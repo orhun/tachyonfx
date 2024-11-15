@@ -2,7 +2,7 @@ use ratatui::buffer::Buffer;
 use ratatui::prelude::Rect;
 
 use crate::bounding_box::BoundingBox;
-use crate::{CellFilter, CellIterator, Duration};
+use crate::{CellFilter, Duration};
 use crate::effect::Effect;
 use crate::effect_timer::EffectTimer;
 use crate::interpolation::Interpolatable;
@@ -66,10 +66,6 @@ impl Shader for Translate {
         } else {
             overflow
         }
-    }
-
-    fn execute(&mut self, _alpha: f32, _area: Rect, _cell_iter: CellIterator) {
-        // nothing to do
     }
 
     fn done(&self) -> bool {

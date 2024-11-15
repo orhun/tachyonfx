@@ -4,7 +4,7 @@ use std::ops::Range;
 
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Position, Rect};
-use crate::{CellFilter, CellIterator, Duration, EffectTimer};
+use crate::{CellFilter, Duration, EffectTimer};
 use crate::simple_rng::{RangeSampler, SimpleRng};
 use crate::shader::Shader;
 
@@ -152,8 +152,6 @@ impl Shader for Glitch {
 
         None
     }
-
-    fn execute(&mut self, _alpha: f32, _area: Rect, _cell_iter: CellIterator) {}
 
     fn done(&self) -> bool {
         false

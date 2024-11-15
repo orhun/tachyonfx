@@ -1,5 +1,14 @@
 # Changelog
 
+### Breaking Changes
+- Changed `Shader::execute()` signature to take a mutable buffer reference instead of `CellIterator`
+  - Old: `fn execute(&mut self, alpha: f32, area: Rect, cell_iter: CellIterator)`
+  - New: `fn execute(&mut self, alpha: f32, area: Rect, buf: &mut Buffer)`
+  - Note that Shader implementations MUST override either:
+    - `execute()` (most common): for standard effects using default timer handling
+    - `process()`: when custom timer handling is needed
+    - The default implementations cannot be used alone as they would result in no-op effects
+
 ### Added
 - `CellFilter::EvalCell`: filter cells based on a predicate function that takes a `&Cell` as input.
 

@@ -1,11 +1,12 @@
 use bon::{builder, Builder};
+use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
 use ratatui::style::Color;
 
 use crate::effect_timer::EffectTimer;
 use crate::shader::Shader;
 use crate::CellFilter;
-use crate::{CellIterator, ColorMapper, HslConvertable, Interpolatable};
+use crate::{ColorMapper, HslConvertable, Interpolatable};
 
 #[derive(Builder, Clone, Default)]
 pub struct HslShift {
@@ -23,7 +24,8 @@ impl Shader for HslShift {
         "hsl_shift"
     }
 
-    fn execute(&mut self, alpha: f32, _area: Rect, cell_iter: CellIterator) {
+    fn execute(&mut self, alpha: f32, area: Rect, buf: &mut Buffer) {
+        let cell_iter = self.cell_iter(buf, area);
         let mut fg_mapper = ColorMapper::default();
         let mut bg_mapper = ColorMapper::default();
 

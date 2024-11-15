@@ -1,7 +1,7 @@
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Offset, Rect};
 
-use crate::{BufferRenderer, CellFilter, CellIterator, Duration, EffectTimer, Interpolatable, RefCount, Shader};
+use crate::{BufferRenderer, CellFilter, Duration, EffectTimer, Interpolatable, RefCount, Shader};
 
 /// Translates the contents of an auxiliary buffer onto the main buffer.
 ///
@@ -57,10 +57,6 @@ impl Shader for TranslateBuffer {
         self.aux_buffer.render_buffer(offset, buf);
 
         overflow
-    }
-
-    fn execute(&mut self, _alpha: f32, _area: Rect, _cell_iter: CellIterator) {
-        // Not used in this implementation
     }
 
     fn done(&self) -> bool {

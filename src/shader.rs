@@ -10,13 +10,20 @@ use crate::EffectTimer;
 /// A trait representing a shader-like object that can be processed for a duration.
 /// The `Shader` trait defines the interface for objects that can apply visual effects
 /// to terminal cells over time.
+///
+/// When implementing this trait, you typically only need to override `execute()`. The default
+/// `process()` implementation handles timer management and calls `execute()` with the current
+/// alpha value. Only override `process()` if you need custom timer handling.
 pub trait Shader: ThreadSafetyMarker {
     fn name(&self) -> &'static str;
 
-    /// Processes the shader for the given duration. Returns any overflowed
-    /// duration if the shader has completed.
+    /// Processes the shader for the given duration. The default implementation:
+    /// 1. Updates the timer with the given duration
+    /// 2. Calls `execute()` with the current alpha value
+    /// 3. Returns any overflow duration
     ///
-    /// This default implementation calls `execute` with the alpha value and the cells.
+    /// Most effects should use this default implementation and implement `execute()` instead.
+    /// Only override this if you need custom timer handling.
     ///
     /// # Arguments
     /// * `duration` - The duration to process the shader for.
@@ -48,25 +55,25 @@ pub trait Shader: ThreadSafetyMarker {
             .map(|t| (t.process(duration), t.alpha()))
             .unwrap_or((None, 1.0));
 
-        let requested_cells = self.cell_iter(buf, area);
-        self.execute(alpha, area, requested_cells);
+        self.execute(alpha, area, buf);
 
         overflow
     }
 
-    /// Executes the shader with the given alpha value and cells. This is where
-    /// the actual shader logic should be implemented.
+    /// Executes the shader effect using the current alpha value. This is the main
+    /// implementation point for most effects.
     ///
     /// # Arguments
     /// * `alpha` - The alpha value indicating the progress of the shader effect.
     /// * `area` - The rectangular area within the buffer where the shader will be applied.
-    /// * `cell_iter` - An iterator over the cells in the specified area.
+    /// * `buf` - A mutable reference to the `Buffer` where the shader will be applied.
+    #[allow(unused_variables)]
     fn execute(
         &mut self,
         alpha: f32,
         area: Rect,
-        cell_iter: CellIterator,
-    );
+        buf: &mut Buffer,
+    ) {}
 
     /// Creates an iterator over the cells in the specified area, filtered by the shader's cell filter.
     ///

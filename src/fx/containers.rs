@@ -1,6 +1,6 @@
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Rect};
-use crate::{CellFilter, CellIterator, Duration, EffectTimer};
+use crate::{CellFilter, Duration, EffectTimer};
 use crate::effect::Effect;
 use crate::widget::EffectSpan;
 use crate::Interpolation::Linear;
@@ -50,8 +50,6 @@ impl Shader for ParallelEffect {
 
         remaining
     }
-
-    fn execute(&mut self, _alpha: f32, _area: Rect, _cell_iter: CellIterator) {}
 
     fn done(&self) -> bool {
         self.effects.iter().all(Effect::done)
@@ -131,8 +129,6 @@ impl Shader for SequentialEffect {
 
         remaining
     }
-
-    fn execute(&mut self, _alpha: f32, _area: Rect, _cell_iter: CellIterator) {}
 
     fn done(&self) -> bool {
         self.current >= self.effects.len()

@@ -1,7 +1,7 @@
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Position, Rect};
 
-use crate::{CellIterator, Duration};
+use crate::Duration;
 use crate::color_ext::AsIndexedColor;
 use crate::color_mapper::ColorMapper;
 use crate::CellFilter;
@@ -39,10 +39,6 @@ impl Shader for Ansi256 {
         }
 
         None
-    }
-
-    fn execute(&mut self, _alpha: f32, _area: Rect, _cell_iter: CellIterator) {
-        // handled by process
     }
 
     fn done(&self) -> bool { false }

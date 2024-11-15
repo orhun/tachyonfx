@@ -156,8 +156,6 @@ impl<S: Clone + ThreadSafetyMarker + 'static> Shader for ShaderFn<S> {
         overflow
     }
 
-    fn execute(&mut self, _alpha: f32, _area: Rect, _cell_iter: CellIterator) {}
-
     fn done(&self) -> bool {
         self.timer.done()
     }

@@ -1,6 +1,6 @@
 use ratatui::buffer::Buffer;
 use ratatui::prelude::Rect;
-use crate::{CellFilter, CellIterator, Duration, EffectTimer};
+use crate::{CellFilter, Duration, EffectTimer};
 
 use crate::effect::Effect;
 use crate::widget::EffectSpan;
@@ -76,10 +76,6 @@ impl Shader for Repeat {
                 }
             }
         }
-    }
-
-    fn execute(&mut self, _alpha: f32, _area: Rect, _cell_iter: CellIterator) {
-        // nothing to do
     }
 
     fn done(&self) -> bool {

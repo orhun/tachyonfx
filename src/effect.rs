@@ -1,7 +1,7 @@
 
 use crate::widget::EffectSpan;
 use crate::shader::Shader;
-use crate::{CellFilter, CellIterator, Duration, EffectTimer};
+use crate::{CellFilter, Duration, EffectTimer};
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
 
@@ -99,8 +99,8 @@ impl Shader for Effect {
         self.shader.process(duration, buf, area)
     }
 
-    fn execute(&mut self, alpha: f32, area: Rect, cell_iter: CellIterator){
-        self.shader.execute(alpha, area, cell_iter);
+    fn execute(&mut self, alpha: f32, area: Rect, buf: &mut Buffer) {
+        self.shader.execute(alpha, area, buf);
     }
 
     fn done(&self) -> bool {

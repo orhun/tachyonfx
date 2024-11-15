@@ -6,7 +6,7 @@ use ratatui::text::Line;
 use ratatui::widgets::{Block, Borders, BorderType};
 use ratatui::widgets::Widget;
 
-use tachyonfx::{CellFilter, CellIterator, Duration, Effect, EffectTimer, Shader};
+use tachyonfx::{CellFilter, Duration, Effect, EffectTimer, Shader};
 
 #[derive(Builder, Clone)]
 pub struct OpenWindow {
@@ -81,11 +81,6 @@ impl Shader for OpenWindow {
 
         overflow
     }
-
-    fn execute(&mut self, _alpha: f32, _area: Rect, _cell_iter: CellIterator) {
-        // nothing to do
-    }
-
 
     fn done(&self) -> bool {
         self.pre_render_fx.is_none()

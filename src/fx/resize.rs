@@ -3,7 +3,7 @@ use ratatui::layout::Size;
 use ratatui::prelude::Rect;
 use ratatui::widgets::Clear;
 use ratatui::widgets::Widget;
-use crate::{CellFilter, CellIterator, Duration};
+use crate::{CellFilter, Duration};
 use crate::effect::Effect;
 use crate::effect_timer::EffectTimer;
 use crate::widget::EffectSpan;
@@ -68,10 +68,6 @@ impl Shader for ResizeArea {
         } else {
             overflow
         }
-    }
-
-    fn execute(&mut self, _alpha: f32, _area: Rect, _cell_iter: CellIterator) {
-        // nothing to do
     }
 
     fn done(&self) -> bool {

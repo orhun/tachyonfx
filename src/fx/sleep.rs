@@ -1,5 +1,5 @@
 use ratatui::layout::Rect;
-use crate::{CellIterator, Duration};
+use crate::Duration;
 
 use crate::CellFilter;
 use crate::effect_timer::EffectTimer;
@@ -20,10 +20,6 @@ impl Sleep {
 impl Shader for Sleep {
     fn name(&self) -> &'static str {
         "sleep"
-    }
-
-    fn execute(&mut self, _alpha: f32, _area: Rect, _cell_iter: CellIterator) {
-         // slept
     }
 
     fn done(&self) -> bool {

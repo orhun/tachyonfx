@@ -1,11 +1,12 @@
 use bon::{builder, Builder};
+use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
 use ratatui::prelude::Color;
 
 use crate::color_mapper::ColorMapper;
 use crate::effect_timer::EffectTimer;
 use crate::shader::Shader;
-use crate::{CellFilter, CellIterator, Interpolatable};
+use crate::{CellFilter, Interpolatable};
 
 #[derive(Builder, Clone)]
 pub struct FadeColors {
@@ -23,7 +24,8 @@ impl Shader for FadeColors {
         if self.timer.is_reversed() { "fade_from" } else { "fade_to" }
     }
 
-    fn execute(&mut self, alpha: f32, _area: Rect, cell_iter: CellIterator) {
+    fn execute(&mut self, alpha: f32, area: Rect, buf: &mut Buffer) {
+        let cell_iter = self.cell_iter(buf, area);
         let mut fg_mapper = ColorMapper::default();
         let mut bg_mapper = ColorMapper::default();
 

@@ -5,7 +5,7 @@ use ratatui::style::Color;
 
 use crate::fx::sliding_window_alpha::SlidingWindowAlpha;
 use crate::fx::{Direction, DirectionalVariance};
-use crate::{CellFilter, CellIterator, Duration, EffectTimer, Shader};
+use crate::{CellFilter, Duration, EffectTimer, Shader};
 
 /// A shader that applies a directional sliding effect to terminal cells.
 #[derive(Builder, Clone)]
@@ -109,8 +109,6 @@ impl Shader for SlideCell {
 
         overflow
     }
-
-    fn execute(&mut self, _alpha: f32, _area: Rect, _cell_iter: CellIterator) {}
 
     fn done(&self) -> bool { self.timer.done() }
 

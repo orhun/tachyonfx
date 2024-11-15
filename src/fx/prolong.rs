@@ -1,6 +1,6 @@
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
-use crate::{CellFilter, CellIterator, Duration, Effect, EffectTimer, Shader};
+use crate::{CellFilter, Duration, Effect, EffectTimer, Shader};
 use crate::Interpolation::Linear;
 use crate::widget::EffectSpan;
 
@@ -53,8 +53,6 @@ impl Shader for Prolong {
             }
         }
     }
-
-    fn execute(&mut self, _alpha: f32, _area: Rect, _cell_iter: CellIterator) {}
 
     /// Checks if the prolonged effect is done.
     ///

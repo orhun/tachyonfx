@@ -892,6 +892,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(not(feature = "std-duration"))]
     fn assert_sizes() {
         let verify_size = |actual: usize, expected: usize| {
             assert_eq!(actual, expected);

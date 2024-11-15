@@ -20,5 +20,5 @@ jobs:
       run: cargo test --verbose
     - name: run tests - sendable
       run: cargo test --verbose --features=sendable
-#    - name: run tests - std-duration
-#      run: cargo test --verbose --features=std-duration
+    - name: run tests - std-duration
+      run: cargo test --verbose --features=std-duration

@@ -101,7 +101,7 @@ impl Shader for Glitch {
 
         // subtract durations
         let last_frame_ms = duration.as_millis();
-        self.glitch_cells.iter_mut().for_each(|cell| Self::update_cell(cell, last_frame_ms));
+        self.glitch_cells.iter_mut().for_each(|cell| Self::update_cell(cell, last_frame_ms as _));
 
         // remove invalid cells (e.g., from resizing)
         self.glitch_cells.retain(|cell| cell.cell_idx < buf.content.len());

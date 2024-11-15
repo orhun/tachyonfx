@@ -10,6 +10,6 @@ pub(crate) use color_resolver::ColorResolver;
 
 pub use effect_timeline::{
     EffectTimeline,
-    EffectTimelineBuilderBuilder,
+    EffectTimelineBuilder,
     EffectTimelineRects
 };

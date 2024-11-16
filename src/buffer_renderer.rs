@@ -1,7 +1,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 use ratatui::buffer::Buffer;
-use ratatui::layout::{Offset, Position, Rect};
+use ratatui::layout::{Offset, Position, Positions, Rect};
 use ratatui::style::{Color, Modifier, Style};
 
 /// A trait for rendering the contents of one buffer onto another.
@@ -126,21 +126,19 @@ pub fn blit_buffer_region(
     // clip source region to source buffer bounds
     let src_region = src_region.intersection(src.area);
 
-    let clip = ClipRegion::new(src_region, offset, *dst.area());
+    let clip = ClipRegion::new(src_region, *dst.area(), offset);
     if !clip.is_valid() {
-        return;
+        return; // zero area or out of bounds
     }
 
-    // copy non-skipped cells from clipped source region
-    for y in 0..clip.height() {
-        for x in 0..clip.width() {
-            let src_cell = &src[clip.src_pos(x, y)];
-            if src_cell.skip {
-                continue;
-            }
-
-            dst[clip.dst_pos(x, y)] = src_cell.clone();
+    // copy non-skipped cells from clipped source region to destination buffer
+    for p in clip.normalized_positions() {
+        let src_cell = &src[clip.src_pos(p)];
+        if src_cell.skip {
+            continue;
         }
+
+        dst[clip.dst_pos(p)] = src_cell.clone();
     }
 }
 
@@ -264,15 +262,15 @@ struct ClipRegion {
 impl ClipRegion {
     fn new(
         src_region: Rect,
-        offset: Offset,
-        dst_bounds: Rect
+        dst_bounds: Rect,
+        dst_offset: Offset
     ) -> Self {
-        let x_offset = offset.x.min(0).unsigned_abs() as u16;
-        let y_offset = offset.y.min(0).unsigned_abs() as u16;
+        let x_offset = dst_offset.x.min(0).unsigned_abs() as u16;
+        let y_offset = dst_offset.y.min(0).unsigned_abs() as u16;
 
         let dst = Rect::new(
-            offset.x.max(0) as u16,
-            offset.y.max(0) as u16,
+            dst_offset.x.max(0) as u16,
+            dst_offset.y.max(0) as u16,
             src_region.width,
             src_region.height
         );
@@ -293,7 +291,7 @@ impl ClipRegion {
     }
 
     fn is_valid(&self) -> bool {
-        self.src.area() > 0 && self.dst.area() > 0
+        self.src.area() > 0
     }
 
     fn width(&self) -> u16 {
@@ -304,12 +302,16 @@ impl ClipRegion {
         self.src.height
     }
 
-    fn src_pos(&self, x: u16, y: u16) -> Position {
-        Position::new(self.src.x + x, self.src.y + y)
+    fn normalized_positions(&self) -> Positions {
+        Rect::new(0, 0, self.width(), self.height()).positions()
     }
 
-    fn dst_pos(&self, x: u16, y: u16) -> Position {
-        Position::new(self.dst.x + x, self.dst.y + y)
+    fn src_pos(&self, pos: Position) -> Position {
+        Position::new(self.src.x + pos.x, self.src.y + pos.y)
+    }
+
+    fn dst_pos(&self, pos: Position) -> Position {
+        Position::new(self.dst.x + pos.x, self.dst.y + pos.y)
     }
 }
 

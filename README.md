@@ -3,9 +3,8 @@
 [![Crate Badge]][Crate] [![API Badge]][API] [![Deps.rs
 Badge]][Deps.rs]
 
-tachyonfx is a [ratatui][ratatui] library for creating shader-like effects in terminal UIs.
-This library provides a collection of effects that can be used to enhance the
-visual appeal of terminal applications, offering capabilities such as color
+tachyonfx is a [ratatui][ratatui] library for creating shader-like effects in terminal UIs. It provides
+a collection of stateful effects that can enhance the visual appeal of terminal applications through color
 transformations, animations, and complex effect combinations.
 
 ![demo](images/demo-0.6.0.gif)
@@ -19,15 +18,40 @@ Add tachyonfx to your `Cargo.toml`:
 tachyonfx = "0.8.0"
 ```
 
-### Features
-- `sendable`: Enables the `Send` trait for effects, shaders, and associated parameters. This allows effects to be
-  safely transferred across thread boundaries. Note that enabling this feature requires all `Shader` implementations
-  to be `Send`, which may impose additional constraints on custom shader implementations.
-- `std-duration`:  Uses `std::time::Duration` instead of a custom 32-bit duration type.
+## Core Concepts
 
-## Overview
+### Effects and State
+Effects in tachyonfx are stateful objects that evolve over time. When you create an effect, it typically maintains:
 
-### Effects
+- An internal timer or flag tracking progress
+- Effect-specific state (like transition progress)
+- Configuration (like styling, directions, or interpolation methods)
+
+```rust
+// Create the effect once
+let mut fade_effect = fx::fade_to_fg(Color::Red, Duration::from_millis(1000));
+
+// In your render loop:
+loop {
+    widget.render(area, buf);
+    
+    // Process the same effect each frame, updating its state
+    fade_effect.process(frame_duration, buf, area);
+    // Or use the helper trait:
+    // frame.render_effect(&mut fade_effect, area, frame_duration);
+}
+```
+
+### Effects and Widgets
+
+Effects in tachyonfx operate on terminal cells after widgets have been rendered to the screen. When an effect is
+applied, it modifies properties of the already-rendered cells - like their colors, characters, or visibility. This means
+the typical flow is:
+
+1. Render your widget to the screen
+2. Apply effects to transform the rendered content
+
+### Types of Effects
 
 The library includes a variety of effects, loosely categorized as follows:
 
@@ -74,11 +98,19 @@ The library includes a variety of effects, loosely categorized as follows:
 - **effect_fn_buf:**    Creates custom effects from functions, operating over `Buffer`.
 - **offscreen_buffer:** Wraps an existing effect and redirects its rendering to a separate buffer.
 
+Additional effects can be created by implementing the `Shader` trait.
+
 
 ### EffectTimer and Interpolations
 
-The EffectTimer is used to control the duration and interpolation of effects. It
+Most effects are driven by an `EffectTimer` that controls their duration and interpolation. It
 allows for precise timing and synchronization of visual effects within your application.
+
+```rust
+fx::dissolve(EffectTimer::from_ms(500, BounceOut))
+fx::dissolve((500, BounceOut)) // shorthand for the above
+fx::dissolve(500)              // linear interpolation
+```
 
 ### Cell Selection and Area
 
@@ -104,6 +136,13 @@ let border_text = CellFilter::AllOf(&[
 prolong_start(duration, fx::fade_from(Dark0, Dark0, (320, QuadOut)),
     .with_cell_selection(border_text)
 ```
+
+### Features
+- `sendable`: Enables the `Send` trait for effects, shaders, and associated parameters. This allows effects to be
+  safely transferred across thread boundaries. Note that enabling this feature requires all `Shader` implementations
+  to be `Send`, which may impose additional constraints on custom shader implementations.
+- `std-duration`:  Uses `std::time::Duration` instead of a custom 32-bit duration type.
+
 
 ## Examples
 

@@ -1,7 +1,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 use ratatui::buffer::Buffer;
-use ratatui::layout::{Offset, Position};
+use ratatui::layout::{Offset, Position, Rect};
 use ratatui::style::{Color, Modifier, Style};
 
 /// A trait for rendering the contents of one buffer onto another.
@@ -25,12 +25,19 @@ pub trait BufferRenderer {
     /// * `offset` - The position offset at which to start rendering in the target buffer.
     /// * `buf` - The target buffer to render onto.
     fn render_buffer(&self, offset: Offset, buf: &mut Buffer);
+
+    fn render_buffer_region(&self, src_region: Rect, offset: Offset, buf: &mut Buffer);
 }
 
 impl BufferRenderer for Rc<RefCell<Buffer>> {
     fn render_buffer(&self, offset: Offset, buf: &mut Buffer) {
         (*self.as_ref().borrow())
             .render_buffer(offset, buf);
+    }
+
+    fn render_buffer_region(&self, src_region: Rect, offset: Offset, buf: &mut Buffer) {
+        (*self.as_ref().borrow())
+            .render_buffer_region(src_region, offset, buf);
     }
 }
 
@@ -40,11 +47,20 @@ impl BufferRenderer for crate::RefCount<Buffer> {
         (*self.lock().unwrap())
             .render_buffer(offset, buf);
     }
+
+    fn render_buffer_region(&self, src_region: Rect, offset: Offset, buf: &mut Buffer) {
+        (*self.lock().unwrap())
+            .render_buffer_region(src_region, offset, buf);
+    }
 }
 
 impl BufferRenderer for Buffer {
     fn render_buffer(&self, offset: Offset, buf: &mut Buffer) {
         blit_buffer(self, buf, offset);
+    }
+
+    fn render_buffer_region(&self, src_region: Rect, offset: Offset, buf: &mut Buffer) {
+        blit_buffer_region(self, src_region, buf, offset);
     }
 }
 
@@ -63,7 +79,8 @@ impl BufferRenderer for Buffer {
 ///
 /// # Behavior
 ///
-/// - If the src cell is marked as `skip`, it will not be copied.
+/// -Individual cells marked with `skip = true` in the source buffer are not copied,
+///  leaving the destination cells unchanged.
 /// - If the offset would place the entire source buffer outside the bounds of the
 ///   destination buffer, no copying occurs.
 /// - The function clips the source buffer as necessary to fit within the destination buffer.
@@ -73,7 +90,45 @@ pub fn blit_buffer(
     dst: &mut Buffer,
     offset: Offset,
 ) {
-    let mut aux_area = src.area; // guaranteed to be Some
+    blit_buffer_region(src, src.area, dst, offset);
+}
+
+/// Copies the specified region of a source buffer onto a destination buffer with a specified offset.
+///
+/// This function performs a "blit" operation, copying cells from the source buffer to the
+/// destination buffer. It handles clipping on all edges, ensuring that only the overlapping
+/// region is copied. The function also correctly handles negative offsets.
+///
+/// # Arguments
+///
+/// * `src` - The source buffer to copy from.
+/// * `src_region` - The rectangular region within the source buffer to copy. This region will be
+///                 automatically clipped to the source buffer's bounds.
+/// * `dst` - The destination buffer to copy into. This buffer is modified in-place.
+/// * `offset` - The offset at which to place the top-left corner of the source buffer
+///              relative to the destination buffer. Can be negative.
+///
+/// # Behavior
+///
+/// - The source region is automatically clipped to the bounds of the source buffer.
+/// - Individual cells marked with `skip = true` in the source buffer are not copied,
+///   leaving the destination cells unchanged.
+/// - If the offset would place the entire source buffer outside the bounds of the
+///   destination buffer, no copying occurs.
+/// - The function clips the source region as necessary to fit within the destination buffer.
+/// - Negative offsets are handled by adjusting the starting position in the source buffer.
+pub fn blit_buffer_region(
+    src: &Buffer,
+    src_region: Rect,
+    dst: &mut Buffer,
+    offset: Offset,
+) {
+    let src_region = src_region.intersection(src.area);
+    if src_region.width == 0 || src_region.height == 0 {
+        return;
+    }
+
+    let mut aux_area = src_region;
     aux_area.x = offset.x.max(0) as _;
     aux_area.y = offset.y.max(0) as _;
 
@@ -81,6 +136,7 @@ pub fn blit_buffer(
 
     let l_clip_x: u16 = offset.x.min(0).unsigned_abs() as _;
     let l_clip_y: u16 = offset.y.min(0).unsigned_abs() as _;
+
 
     let r_clip_x: u16 = aux_area.x + aux_area.width - l_clip_x;
     let r_clip_x: u16 = r_clip_x - r_clip_x.min(target_area.width);
@@ -96,7 +152,7 @@ pub fn blit_buffer(
 
     for y in l_clip_y..(aux_area.height - r_clip_y) {
         for x in l_clip_x..(aux_area.width - r_clip_x) {
-            let src_cell = &src[Position::new(x, y)];
+            let src_cell = &src[Position::new(x + src_region.x, y + src_region.y)];
             if src_cell.skip {
                 continue;
             }
@@ -383,6 +439,104 @@ mod tests {
         assert_eq!(buf, Buffer::with_lines([
             "FFFFF . ",
             ". . . . ",
+            ". . . . ",
+        ]));
+    }
+
+    #[test]
+    fn test_blit_buffer_region() {
+        let buffer = || Buffer::with_lines([
+            ". . . . ",
+            ". . . . ",
+            ". . . . ",
+            ". . . . ",
+            ". . . . ",
+        ]);
+
+        let aux_buffer = Buffer::with_lines([
+            "abcd",
+            "efgh",
+            "ijkl",
+            "mnop",
+        ]);
+
+        let mut buf = buffer();
+        blit_buffer_region(&aux_buffer, Rect::new(1, 1, 2, 2), &mut buf, Offset::default());
+        assert_eq!(buf, Buffer::with_lines([
+            "fg. . . ",
+            "jk. . . ",
+            ". . . . ",
+            ". . . . ",
+            ". . . . ",
+        ]));
+
+        let mut buf = buffer();
+        blit_buffer_region(&aux_buffer, Rect::new(1, 1, 2, 2), &mut buf, Offset { x: 4, y: 2 });
+        assert_eq!(buf, Buffer::with_lines([
+            ". . . . ",
+            ". . . . ",
+            ". . fg. ",
+            ". . jk. ",
+            ". . . . ",
+        ]));
+
+        let mut buf = buffer();
+        blit_buffer_region(&aux_buffer, Rect::new(1, 1, 3, 3), &mut buf, Offset { x: -1, y: -1 });
+        assert_eq!(buf, Buffer::with_lines([
+            "kl. . . ",
+            "op. . . ",
+            ". . . . ",
+            ". . . . ",
+            ". . . . ",
+        ]));
+
+        let mut buf = buffer();
+        blit_buffer_region(&aux_buffer, Rect::new(2, 2, 3, 3), &mut buf, Offset::default());
+        assert_eq!(buf, Buffer::with_lines([
+            "kl. . . ",
+            "op. . . ",
+            ". . . . ",
+            ". . . . ",
+            ". . . . ",
+        ]));
+
+        let mut buf = buffer();
+        blit_buffer_region(&aux_buffer, Rect::new(0, 0, 2, 2), &mut buf, Offset { x: 6, y: 3 });
+        assert_eq!(buf, Buffer::with_lines([
+            ". . . . ",
+            ". . . . ",
+            ". . . . ",
+            ". . . ab",
+            ". . . ef",
+        ]));
+
+        let mut buf = buffer();
+        blit_buffer_region(&aux_buffer, Rect::new(0, 0, 2, 2), &mut buf, Offset { x: 8, y: 8 });
+        assert_eq!(buf, Buffer::with_lines([
+            ". . . . ",
+            ". . . . ",
+            ". . . . ",
+            ". . . . ",
+            ". . . . ",
+        ]));
+
+        let mut buf = buffer();
+        blit_buffer_region(&aux_buffer, Rect::new(1, 1, 0, 0), &mut buf, Offset::default());
+        assert_eq!(buf, Buffer::with_lines([
+            ". . . . ",
+            ". . . . ",
+            ". . . . ",
+            ". . . . ",
+            ". . . . ",
+        ]));
+
+        let mut buf = buffer();
+        blit_buffer_region(&aux_buffer, Rect::new(0, 0, 4, 4), &mut buf, Offset::default());
+        assert_eq!(buf, Buffer::with_lines([
+            "abcd. . ",
+            "efgh. . ",
+            "ijkl. . ",
+            "mnop. . ",
             ". . . . ",
         ]));
     }

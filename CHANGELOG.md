@@ -11,6 +11,8 @@
 
 ### Added
 - `CellFilter::EvalCell`: filter cells based on a predicate function that takes a `&Cell` as input.
+- `blit_buffer_region()`: new function to support copying specific regions from source buffers.
+- `render_buffer_region()` method added to `BufferRenderer` trait to enable region-based buffer rendering.
 
 ### Changed
 - `blit_buffer()`: now omits copying cells where `cell.skip` is true. This behavior 

@@ -105,7 +105,7 @@ pub fn blit_buffer(
 /// * `src_region` - The rectangular region within the source buffer to copy. This region will be
 ///                 automatically clipped to the source buffer's bounds.
 /// * `dst` - The destination buffer to copy into. This buffer is modified in-place.
-/// * `offset` - The offset at which to place the top-left corner of the source buffer
+/// * `offset` - The offset at which to place the top-left corner of the source region
 ///              relative to the destination buffer. Can be negative.
 ///
 /// # Behavior
@@ -123,45 +123,23 @@ pub fn blit_buffer_region(
     dst: &mut Buffer,
     offset: Offset,
 ) {
+    // clip source region to source buffer bounds
     let src_region = src_region.intersection(src.area);
-    if src_region.width == 0 || src_region.height == 0 {
+
+    let clip = ClipRegion::new(src_region, offset, *dst.area());
+    if !clip.is_valid() {
         return;
     }
 
-    let mut aux_area = src_region;
-    aux_area.x = offset.x.max(0) as _;
-    aux_area.y = offset.y.max(0) as _;
-
-    let target_area = *dst.area();
-
-    let l_clip_x: u16 = offset.x.min(0).unsigned_abs() as _;
-    let l_clip_y: u16 = offset.y.min(0).unsigned_abs() as _;
-
-
-    let r_clip_x: u16 = aux_area.x + aux_area.width - l_clip_x;
-    let r_clip_x: u16 = r_clip_x - r_clip_x.min(target_area.width);
-
-    let r_clip_y: u16 = aux_area.y + aux_area.height - l_clip_y;
-    let r_clip_y: u16 = r_clip_y - r_clip_y.min(target_area.height);
-
-    if aux_area.width.checked_sub(r_clip_x).is_none()
-        || aux_area.height.checked_sub(r_clip_y).is_none()
-    {
-        return;
-    }
-
-    for y in l_clip_y..(aux_area.height - r_clip_y) {
-        for x in l_clip_x..(aux_area.width - r_clip_x) {
-            let src_cell = &src[Position::new(x + src_region.x, y + src_region.y)];
+    // copy non-skipped cells from clipped source region
+    for y in 0..clip.height() {
+        for x in 0..clip.width() {
+            let src_cell = &src[clip.src_pos(x, y)];
             if src_cell.skip {
                 continue;
             }
 
-            let c = &mut dst[Position::new(
-                x + aux_area.x - l_clip_x,
-                y + aux_area.y - l_clip_y,
-            )];
-            *c =  src_cell.clone();
+            dst[clip.dst_pos(x, y)] = src_cell.clone();
         }
     }
 }
@@ -274,6 +252,64 @@ fn color_code(color: Color, foreground: bool) -> String {
         Color::White        => format!("\x1b[{};5;15m", base),
         Color::Indexed(i)   => format!("\x1b[{};5;{}m", base, i),
         Color::Rgb(r, g, b) => format!("\x1b[{};2;{};{};{}m", base, r, g, b),
+    }
+}
+
+/// Helper struct to handle clipping calculations
+struct ClipRegion {
+    src: Rect,
+    dst: Rect,
+}
+
+impl ClipRegion {
+    fn new(
+        src_region: Rect,
+        offset: Offset,
+        dst_bounds: Rect
+    ) -> Self {
+        let x_offset = offset.x.min(0).unsigned_abs() as u16;
+        let y_offset = offset.y.min(0).unsigned_abs() as u16;
+
+        let dst = Rect::new(
+            offset.x.max(0) as u16,
+            offset.y.max(0) as u16,
+            src_region.width,
+            src_region.height
+        );
+
+        // adjust source and destination regions based on clipping and bounds
+        let width = (dst.width - x_offset)
+            .min(dst_bounds.width.saturating_sub(dst.x))
+            .min(src_region.width);
+
+        let height = (dst.height - y_offset)
+            .min(dst_bounds.height.saturating_sub(dst.y))
+            .min(src_region.height);
+
+        Self {
+            src: Rect::new(src_region.x + x_offset, src_region.y + y_offset, width, height),
+            dst: Rect::new(dst.x, dst.y, width, height),
+        }
+    }
+
+    fn is_valid(&self) -> bool {
+        self.src.area() > 0 && self.dst.area() > 0
+    }
+
+    fn width(&self) -> u16 {
+        self.src.width
+    }
+
+    fn height(&self) -> u16 {
+        self.src.height
+    }
+
+    fn src_pos(&self, x: u16, y: u16) -> Position {
+        Position::new(self.src.x + x, self.src.y + y)
+    }
+
+    fn dst_pos(&self, x: u16, y: u16) -> Position {
+        Position::new(self.dst.x + x, self.dst.y + y)
     }
 }
 

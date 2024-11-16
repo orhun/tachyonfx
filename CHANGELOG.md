@@ -19,7 +19,8 @@
   also carries over to `BufferRenderer::render_buffer()`.
 
 ### Fixed
-- `std-duration` feature: mismatched types error when building the glitch effect. Thanks to @Veetaha for reporting. 
+- `std-duration` feature: mismatched types error when building the glitch effect. Thanks 
+  to [@Veetaha](https://github.com/Veetaha) for reporting. 
 
 ## tachyonfx 0.8.0 - 2024-10-21
 This is just a tiny release in order to be compatible with the latest `ratatui` version.

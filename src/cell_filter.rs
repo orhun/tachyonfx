@@ -252,8 +252,7 @@ impl CellFilter {
 mod tests {
     use layout::Layout;
     use ratatui::buffer::Buffer;
-    use crate::duration::duration::Duration;
-    use crate::EffectRenderer;
+    use crate::{Duration, EffectRenderer};
     use crate::fx::effect_fn;
     use super::*;
 

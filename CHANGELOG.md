@@ -1,9 +1,9 @@
 # Changelog
-## tachyonfx 0.9.1 - 2024-11-17
+## tachyonfx 0.9.2 - 2024-11-17
 
 ### Fixed
 - `Cargo.lock` no longer omitted from the crate package. This was an oversight in previous releases.
-
+- Fixed test build failure when the `std-duration` feature is enabled.
 
 ## tachyonfx 0.9.0 - 2024-11-17
 

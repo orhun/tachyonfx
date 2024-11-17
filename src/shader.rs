@@ -84,7 +84,7 @@ pub trait Shader: ThreadSafetyMarker {
     /// * `area` - The rectangular area within the buffer where the shader will be applied.
     ///
     /// # Returns
-    /// * A `CellIterator` over the cells in the specified area.
+    /// * A [CellIterator] over the cells in the specified area.
     fn cell_iter<'a>(
         &mut self,
         buf: &'a mut Buffer,

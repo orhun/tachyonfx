@@ -26,14 +26,14 @@ mod features;
 /// `CellIterator` provides an iterator over terminal cells.
 pub use cell_iter::CellIterator;
 pub use color_mapper::ColorMapper;
-pub use cell_filter::CellFilter;
+pub use cell_filter::{CellFilter, CellPredicate};
 pub use effect::{Effect, IntoEffect};
 pub use effect_timer::EffectTimer;
 pub use rect_ext::CenteredShrink;
 pub use render_effect::EffectRenderer;
 pub use shader::Shader;
 pub use interpolation::*;
-pub use buffer_renderer::{BufferRenderer, blit_buffer, render_as_ansi_string};
+pub use buffer_renderer::*;
 pub use simple_rng::*;
 pub use duration::Duration;
 pub use features::{ref_count, RefCount, ThreadSafetyMarker};

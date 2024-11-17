@@ -15,7 +15,11 @@ type PositionFnType = RefCount<dyn Fn(Position) -> bool>;
 #[cfg(feature = "sendable")]
 type PositionFnType = RefCount<dyn Fn(Position) -> bool + Send>;
 
-/// A filter mode enables effects to operate on specific cells.
+/// A filter mode that enables effects to operate on specific cells based on various criteria.
+///
+/// `CellFilter` provides a flexible way to select cells for applying effects based on their
+/// properties such as colors, position, content, or custom predicates. Filters can be combined
+/// using logical operations to create complex selection patterns.
 #[derive(Clone, Default)]
 pub enum CellFilter {
     /// Selects every cell
@@ -48,18 +52,29 @@ pub enum CellFilter {
 }
 
 impl CellFilter {
-    pub fn apply_position_fn<F>(f: F) -> Self
-        where F: Fn(Position) -> bool + ThreadSafetyMarker + 'static
-    {
-        CellFilter::PositionFn(ref_count(f))
-    }
-
-    pub fn eval_fn<F>(f: F) -> Self
+    /// Creates a new cell filter using a custom evaluation function.
+    ///
+    /// The provided function should return `true` for cells that should be selected
+    /// and `false` for cells that should be excluded.
+    ///
+    /// # Arguments
+    /// * `f` - A function that takes a reference to a Cell and returns a boolean
+    ///
+    /// # Type Parameters
+    /// * `F` - A function type that implements the required thread safety markers
+    pub fn eval_cell<F>(f: F) -> Self
         where F: Fn(&Cell) -> bool + ThreadSafetyMarker + 'static
     {
         CellFilter::EvalCell(ref_count(f))
     }
 
+    /// Converts the filter to a human-readable string representation.
+    ///
+    /// This method is useful for debugging and logging purposes, providing
+    /// a clear visualization of the filter's structure and parameters.
+    ///
+    /// # Returns
+    /// A String representing the filter in a readable format
     pub fn to_string(&self) -> String {
         fn to_hex(c: &Color) -> String {
             let (r, g, b) = c.to_rgb();
@@ -90,17 +105,38 @@ impl CellFilter {
             CellFilter::Not(filter)     => format!("!{}", filter.to_string()),
             CellFilter::Layout(_, idx)  => format!("layout({})", idx),
             CellFilter::PositionFn(_)   => "position_fn".to_string(),
-            CellFilter::EvalCell(_)     => "cell_fn".to_string(),
+            CellFilter::EvalCell(_)     => "eval_cell".to_string(),
         }
     }
 }
 
-pub struct CellSelector {
+/// A predicate that evaluates cells based on their position and properties using a specified filter strategy.
+///
+/// `CellPredicate` is created internally by `CellFilter`'s `selector` method and serves as the
+/// evaluation engine for cell filtering operations. It combines spatial awareness (via a rectangular area)
+/// with content-based filtering rules to determine which cells should be included in operations.
+///
+/// See also [crate::Shader::cell_iter].
+pub struct CellPredicate {
+    /// The effective area for cell evaluation after applying any area-modifying filters.
+    /// This may be different from the original area if the filter modifies spatial bounds
+    /// (e.g., margins or layout sections).
     inner_area: Rect,
+
+    /// The filter strategy that defines the criteria cells must meet to be considered valid.
+    /// This strategy can combine multiple filters using logical operations (AND, OR, NOT)
+    /// and can include both position-based and content-based criteria.
     strategy: CellFilter,
 }
 
-impl CellSelector {
+impl CellPredicate {
+    /// Creates a new `CellPredicate` with the specified area and filter strategy.
+    ///
+    /// The provided area may be modified based on the filter strategy (e.g., for margin-based filters).
+    ///
+    /// # Arguments
+    /// * `area` - The initial rectangular area for cell evaluation
+    /// * `strategy` - The filter strategy to apply
     fn new(area: Rect, strategy: CellFilter) -> Self {
         let inner_area = Self::resolve_area(area, &strategy);
 
@@ -125,6 +161,17 @@ impl CellSelector {
         }
     }
 
+    /// Determines if a cell at the given position meets the filter criteria.
+    ///
+    /// This method combines position-based and cell-content-based filtering to make
+    /// the final determination.
+    ///
+    /// # Arguments
+    /// * `pos` - The position to evaluate
+    /// * `cell` - The cell at the given position
+    ///
+    /// # Returns
+    /// `true` if the cell meets all filter criteria, `false` otherwise
     pub fn is_valid(&self, pos: Position, cell: &Cell) -> bool {
         let mode = &self.strategy;
 
@@ -196,8 +243,8 @@ impl CellSelector {
 }
 
 impl CellFilter {
-    pub fn selector(&self, area: Rect) -> CellSelector {
-        CellSelector::new(area, self.clone())
+    pub fn selector(&self, area: Rect) -> CellPredicate {
+        CellPredicate::new(area, self.clone())
     }
 }
 
@@ -255,7 +302,7 @@ mod tests {
         assert_eq!(filter.to_string(), "position_fn");
 
         let filter = CellFilter::EvalCell(ref_count(|_| true));
-        assert_eq!(filter.to_string(), "cell_fn");
+        assert_eq!(filter.to_string(), "eval_cell");
     }
 
     #[test]
@@ -267,7 +314,7 @@ mod tests {
             ". . . . ",
         ]);
 
-        let filter = CellFilter::eval_fn(|cell| cell.symbol() == ".");
+        let filter = CellFilter::eval_cell(|cell| cell.symbol() == ".");
         let mut fx = effect_fn((), 1, |_, _, cells| {
             for (_, c) in cells {
                 c.set_symbol("X");

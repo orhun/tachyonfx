@@ -15,7 +15,7 @@ transformations, animations, and complex effect combinations.
 Add tachyonfx to your `Cargo.toml`:
 
 ```toml
-tachyonfx = "0.8.0"
+tachyonfx = "0.9.0"
 ```
 
 ## Core Concepts
@@ -146,32 +146,32 @@ prolong_start(duration, fx::fade_from(Dark0, Dark0, (320, QuadOut)),
 
 ## Examples
 
-### Example: `minimal`
+### Example: [minimal](examples/minimal.rs)
 ```
 cargo run --release --example=minimal 
 ```
 
-### Example: `tweens`
+### Example: [tweens](examples/tweens.rs)
 ![tweens](images/example-tweens.png)
 
 ```
 cargo run --release --example=tweens 
 ```
 
-### Example: `basic-effects`
+### Example: [basic-effects](examples/basic-effects.rs)
 ![basic effeects](images/example-basic-effects.png)
 ```
 cargo run --release --example=basic-effects 
 ```
 
 
-### Example: `open-window`
+### Example: [open-window](examples/open-window.rs)
 
 ```
 cargo run --release --example=open-window  
 ```
 
-### Example: `fx-chart`
+### Example: [fx-chart](examples/fx-chart.rs)
 ![fx-chart](images/effect-timeline.gif)
 
 A demo of the `EffectTimelineWidget` showcasing the composition of effects. The widget is a "plain" widget

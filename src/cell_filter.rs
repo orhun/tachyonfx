@@ -78,7 +78,7 @@ impl CellFilter {
         }
 
         match self {
-            CellFilter::All => "all".to_string(),
+            CellFilter::All             => "all".to_string(),
             CellFilter::FgColor(color)  => format!("fg({})", to_hex(color)),
             CellFilter::BgColor(color)  => format!("bg({})", to_hex(color)),
             CellFilter::Inner(m)        => format!("inner({})", format_margin(m)),
@@ -204,6 +204,10 @@ impl CellFilter {
 #[cfg(test)]
 mod tests {
     use layout::Layout;
+    use ratatui::buffer::Buffer;
+    use crate::duration::duration::Duration;
+    use crate::EffectRenderer;
+    use crate::fx::effect_fn;
     use super::*;
 
     #[test]
@@ -252,5 +256,32 @@ mod tests {
 
         let filter = CellFilter::EvalCell(ref_count(|_| true));
         assert_eq!(filter.to_string(), "cell_fn");
+    }
+
+    #[test]
+    fn test_cell_filter_eval() {
+        let mut buf = Buffer::with_lines([
+            ". . . . ",
+            ". . . . ",
+            ". . . . ",
+            ". . . . ",
+        ]);
+
+        let filter = CellFilter::eval_fn(|cell| cell.symbol() == ".");
+        let mut fx = effect_fn((), 1, |_, _, cells| {
+            for (_, c) in cells {
+                c.set_symbol("X");
+            }
+        }).with_cell_selection(filter);
+
+        let area = buf.area().clone();
+        buf.render_effect(&mut fx, area, Duration::from_millis(16));
+
+        assert_eq!(buf, Buffer::with_lines([
+            "X X X X ",
+            "X X X X ",
+            "X X X X ",
+            "X X X X ",
+        ]));
     }
 }

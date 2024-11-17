@@ -99,8 +99,8 @@ impl Shader for Effect {
         self.shader.process(duration, buf, area)
     }
 
-    fn execute(&mut self, alpha: f32, area: Rect, buf: &mut Buffer) {
-        self.shader.execute(alpha, area, buf);
+    fn execute(&mut self, duration: Duration, area: Rect, buf: &mut Buffer) {
+        self.shader.execute(duration, area, buf);
     }
 
     fn done(&self) -> bool {

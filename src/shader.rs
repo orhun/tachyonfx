@@ -51,26 +51,28 @@ pub trait Shader: ThreadSafetyMarker {
         buf: &mut Buffer,
         area: Rect,
     ) -> Option<Duration> {
-        let (overflow, alpha) = self.timer_mut()
-            .map(|t| (t.process(duration), t.alpha()))
-            .unwrap_or((None, 1.0));
+        let overflow= self.timer_mut()
+            .map(|t| t.process(duration))
+            .unwrap_or(None);
 
-        self.execute(alpha, area, buf);
+        self.execute(duration, area, buf);
 
         overflow
     }
 
-    /// Executes the shader effect using the current alpha value. This is the main
-    /// implementation point for most effects.
+    /// Executes the shader effect after the `duration` has been applied to the timer. This is the
+    /// main implementation point for most effects, and is called by the default `process()`
     ///
     /// # Arguments
+    /// * `duration` - The duration to process the shader for. If a timer is associated with
+    ///                the shader, it has already been updated with this duration.
     /// * `alpha` - The alpha value indicating the progress of the shader effect.
     /// * `area` - The rectangular area within the buffer where the shader will be applied.
     /// * `buf` - A mutable reference to the `Buffer` where the shader will be applied.
     #[allow(unused_variables)]
     fn execute(
         &mut self,
-        alpha: f32,
+        duration: Duration,
         area: Rect,
         buf: &mut Buffer,
     ) {}

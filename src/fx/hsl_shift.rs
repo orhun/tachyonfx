@@ -5,7 +5,7 @@ use ratatui::style::Color;
 
 use crate::effect_timer::EffectTimer;
 use crate::shader::Shader;
-use crate::CellFilter;
+use crate::{CellFilter, Duration};
 use crate::{ColorMapper, HslConvertable, Interpolatable};
 
 #[derive(Builder, Clone, Default)]
@@ -24,7 +24,9 @@ impl Shader for HslShift {
         "hsl_shift"
     }
 
-    fn execute(&mut self, alpha: f32, area: Rect, buf: &mut Buffer) {
+    fn execute(&mut self, _: Duration, area: Rect, buf: &mut Buffer) {
+        let alpha = self.timer.alpha();
+
         let cell_iter = self.cell_iter(buf, area);
         let mut fg_mapper = ColorMapper::default();
         let mut bg_mapper = ColorMapper::default();

@@ -4,7 +4,7 @@ use ratatui::layout::Rect;
 use crate::effect_timer::EffectTimer;
 use crate::shader::Shader;
 use crate::simple_rng::SimpleRng;
-use crate::CellFilter;
+use crate::{CellFilter, Duration};
 
 #[derive(Clone)]
 pub struct Dissolve {
@@ -32,7 +32,8 @@ impl Shader for Dissolve {
         if self.timer.is_reversed() { "coalesce" } else { "dissolve" }
     }
 
-    fn execute(&mut self, alpha: f32, area: Rect, buf: &mut Buffer) {
+    fn execute(&mut self, _: Duration, area: Rect, buf: &mut Buffer) {
+        let alpha = self.timer.alpha();
         let cell_iter = self.cell_iter(buf, area);
         let mut lcg = self.lcg;
         cell_iter

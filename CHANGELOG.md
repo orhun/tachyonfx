@@ -1,13 +1,27 @@
 # Changelog
 
 ### Breaking Changes
-- Changed `Shader::execute()` signature to take a mutable buffer reference instead of `CellIterator`
-  - Old: `fn execute(&mut self, alpha: f32, area: Rect, cell_iter: CellIterator)`
-  - New: `fn execute(&mut self, alpha: f32, area: Rect, buf: &mut Buffer)`
-  - Note that Shader implementations MUST override either:
-    - `execute()` (most common): for standard effects using default timer handling
-    - `process()`: when custom timer handling is needed
-    - The default implementations cannot be used alone as they would result in no-op effects
+#### Shader::execute() Signature Update
+**Previous:**
+```rust
+fn execute(&mut self, alpha: f32, area: Rect, cell_iter: CellIterator)
+```
+**New:**
+```rust
+fn execute(&mut self, duration: Duration, area: Rect, buf: &mut Buffer)
+```
+
+When implementing the Shader trait, you must override one of these methods:
+
+1. `execute()` (Recommended)
+    - Use for standard effects that rely on default timer handling
+    - Most common implementation choice
+2. `process()` (Advanced)
+    - Use when custom timer handling is needed
+    - Gives full control over timing behavior
+
+**Important:** The default implementations of both methods are no-ops and cannot be used alone. You must override
+at least one of them for a functioning effect.
 
 ### Added
 - `CellFilter::EvalCell`: filter cells based on a predicate function that takes a `&Cell` as input.
@@ -16,7 +30,7 @@
 
 ### Changed
 - `blit_buffer()`: now omits copying cells where `cell.skip` is true. This behavior 
-  also carries over to `BufferRenderer::render_buffer()`.
+  also carries over to the `BufferRenderer` trait and `blit_buffer_region()`.
 
 ### Fixed
 - `std-duration` feature: mismatched types error when building the glitch effect. Thanks 

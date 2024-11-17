@@ -1,4 +1,11 @@
 # Changelog
+## tachyonfx 0.9.1 - 2024-11-17
+
+### Fixed
+- `Cargo.lock` no longer omitted from the crate package. This was an oversight in previous releases.
+
+
+## tachyonfx 0.9.0 - 2024-11-17
 
 ### Breaking Changes
 #### Shader::execute() Signature Update

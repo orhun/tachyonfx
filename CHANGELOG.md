@@ -13,12 +13,13 @@ fn execute(&mut self, duration: Duration, area: Rect, buf: &mut Buffer)
 
 When implementing the Shader trait, you must override one of these methods:
 
-1. `execute()` (Recommended)
-    - Use for standard effects that rely on default timer handling
+1. `execute()` (automatic timer handling)
+    - Effect timer handling is done automatically; use for standard effects that rely on default timer handling
     - Most common implementation choice
-2. `process()` (Advanced)
+2. `process()` (manual timer handling)
     - Use when custom timer handling is needed
     - Gives full control over timing behavior
+    - Must report timer overflow via return value
 
 **Important:** The default implementations of both methods are no-ops and cannot be used alone. You must override
 at least one of them for a functioning effect.

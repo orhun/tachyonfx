@@ -1,4 +1,8 @@
 # Changelog
+## tachyonfx 0.9.3 - 2024-11-20
+### Fixed
+- sweep and slide effects now honor applied CellFilters.
+
 ## tachyonfx 0.9.2 - 2024-11-17
 
 ### Fixed

@@ -50,11 +50,8 @@ impl Shader for SlideCell {
         }
     }
 
-    fn process(&mut self, duration: Duration, buf: &mut Buffer, area: Rect) -> Option<Duration> {
-        let (overflow, alpha) = self.timer_mut()
-            .map(|t| (t.process(duration), t.alpha()))
-            .unwrap_or((None, 1.0));
-
+    fn execute(&mut self, _: Duration, area: Rect, buf: &mut Buffer) {
+        let alpha = self.timer.alpha();
         let direction = self.direction;
 
         let window_alpha = SlidingWindowAlpha::builder()
@@ -82,14 +79,19 @@ impl Shader for SlideCell {
             }
         };
 
-        let safe_area = area.intersection(buf.area);
+        let area = area.intersection(buf.area);
+        let cell_filter = self.cell_filter.selector(area);
+
         if self.randomness_extent == 0 || [Direction::LeftToRight, Direction::RightToLeft].contains(&direction) {
-            for y in area.y..area.y + safe_area.height {
+            for y in area.y..area.bottom() {
                 let row_variance = axis_jitter.next();
-                for x in area.x..area.x + safe_area.width {
+                for x in area.x..area.right() {
                     let pos = Position { x, y };
                     let cell = buf.cell_mut(pos).unwrap();
-                    update_cell(cell, offset(pos, row_variance));
+
+                    if cell_filter.is_valid(pos, cell) {
+                        update_cell(cell, offset(pos, row_variance));
+                    }
                 }
             }
         } else {
@@ -97,17 +99,18 @@ impl Shader for SlideCell {
                 .map(|_| axis_jitter.next().1)
                 .collect::<Vec<i16>>();
 
-            for y in area.y..area.y + safe_area.height {
-                for x in area.x..area.x + safe_area.width {
+            for y in area.y..area.bottom() {
+                for x in area.x..area.right() {
                     let pos = Position { x, y };
-                    let col_variance = (0, col_variances[(x - area.x) as usize]);
                     let cell = buf.cell_mut(pos).unwrap();
-                    update_cell(cell, offset(pos, col_variance));
+
+                    if cell_filter.is_valid(pos, cell) {
+                        let col_variance = (0, col_variances[(x - area.x) as usize]);
+                        update_cell(cell, offset(pos, col_variance));
+                    }
                 }
             }
         }
-
-        overflow
     }
 
     fn done(&self) -> bool { self.timer.done() }

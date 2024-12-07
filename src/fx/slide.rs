@@ -8,7 +8,7 @@ use crate::fx::{Direction, DirectionalVariance};
 use crate::{CellFilter, Duration, EffectTimer, Shader};
 
 /// A shader that applies a directional sliding effect to terminal cells.
-#[derive(Builder, Clone)]
+#[derive(Builder, Clone, Debug)]
 pub struct SlideCell {
     /// The color behind the sliding cell.
     color_behind_cell: Color,

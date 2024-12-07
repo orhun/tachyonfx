@@ -68,6 +68,7 @@
 //! | [`offscreen_buffer()`] 📺 | Renders to separate buffer        | N/A |
 //!
 
+use std::fmt::Debug;
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Offset, Size};
 use ratatui::style::Color;
@@ -181,7 +182,7 @@ mod direction;
 ///             let color = Color::from_hsl(hue, 100.0, 50.0);
 ///             cell.set_fg(color);
 ///     });
-/// })
+/// });
 /// ```
 ///
 /// This example creates an effect that runs indefinitely and cycles the color of each
@@ -190,7 +191,7 @@ mod direction;
 ///
 pub fn effect_fn<F, S, T>(state: S, timer: T, f: F) -> Effect
 where
-    S: Clone + Send + 'static,
+    S: Clone + ThreadSafetyMarker + Debug + 'static,
     T: Into<EffectTimer>,
     F: FnMut(&mut S, ShaderFnContext, CellIterator) + ThreadSafetyMarker + 'static,
 {
@@ -245,7 +246,7 @@ where
 ///         }
 ///         cell.set_fg(Color::Indexed(((offset + i) % 256) as u8));
 ///     }
-/// }).with_cell_selection(CellFilter::Text)
+/// }).with_cell_selection(CellFilter::Text);
 /// ```
 ///
 /// This example creates an effect that runs for 1s and cycles the color of the
@@ -253,7 +254,7 @@ where
 /// the cell's position.
 pub fn effect_fn_buf<F, S, T>(state: S, timer: T, f: F) -> Effect
 where
-    S: Clone + Send + 'static,
+    S: Clone + ThreadSafetyMarker + Debug + 'static,
     T: Into<EffectTimer>,
     F: FnMut(&mut S, ShaderFnContext, &mut Buffer) + ThreadSafetyMarker + 'static,
 {
@@ -281,7 +282,7 @@ where
 /// let timer = (1000, Interpolation::Linear);
 /// let fg_shift = [120.0, 25.0, 25.0];
 /// let bg_shift = [-40.0, -50.0, -50.0];
-/// fx::hsl_shift(Some(fg_shift), Some(bg_shift), timer)
+/// fx::hsl_shift(Some(fg_shift), Some(bg_shift), timer);
 /// ```
 pub fn hsl_shift<T: Into<EffectTimer>>(
     hsl_fg_change: Option<[f32; 3]>,
@@ -315,7 +316,7 @@ pub fn hsl_shift<T: Into<EffectTimer>>(
 /// // shift the hue of the entire area
 /// let timer = (1000, Interpolation::Linear);
 /// let fg_shift = [120.0, 25.0, 25.0];
-/// fx::hsl_shift(Some(fg_shift), None, timer)
+/// fx::hsl_shift(Some(fg_shift), None, timer);
 /// ```
 pub fn hsl_shift_fg<T: Into<EffectTimer>>(
     hsl_fg_change: [f32; 3],
@@ -743,7 +744,7 @@ pub fn parallel(effects: &[Effect]) -> Effect {
 /// ```no_run
 /// use tachyonfx::{fx, Interpolation};
 ///
-/// fx::dissolve(1000) // linear interpolation
+/// fx::dissolve(1000); // linear interpolation
 /// ```
 pub fn dissolve<T: Into<EffectTimer>>(timer: T) -> Effect {
     Dissolve::new(timer.into())
@@ -761,7 +762,7 @@ pub fn dissolve<T: Into<EffectTimer>>(timer: T) -> Effect {
 /// ```no_run
 /// use tachyonfx::{fx, Interpolation};
 ///
-/// fx::coalesce((1000, Interpolation::BounceOut))
+/// fx::coalesce((1000, Interpolation::BounceOut));
 /// ```
 pub fn coalesce<T: Into<EffectTimer>>(timer: T) -> Effect {
     Dissolve::new(timer.into().reversed())
@@ -900,7 +901,7 @@ pub fn sleep<T: Into<EffectTimer>>(duration: T) -> Effect {
 /// use tachyonfx::fx;
 ///
 /// // wait 800ms before dissolving the content
-/// fx::delay(800, fx::dissolve(200))
+/// fx::delay(800, fx::dissolve(200));
 /// ```
 pub fn delay<T: Into<EffectTimer>>(duration: T, effect: Effect) -> Effect {
     sequence(&[sleep(duration), effect])
@@ -1069,8 +1070,6 @@ pub (crate) use invoke_fn;
 #[cfg(test)]
 mod tests {
     use ratatui::prelude::Color;
-    use crate::fx::offscreen_buffer::OffscreenBuffer;
-    use crate::fx::translate::Translate;
     use super::*;
     use crate::Shader;
 
@@ -1175,6 +1174,8 @@ mod tests {
         let verify_size = |actual: usize, expected: usize| {
             assert_eq!(actual, expected);
         };
+
+        use crate::fx::{translate::Translate, offscreen_buffer::OffscreenBuffer};
 
         verify_size(size_of::<EffectTimer>(),      12);
         verify_size(size_of::<Ansi256>(),          10);

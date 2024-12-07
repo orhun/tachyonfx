@@ -4,7 +4,7 @@ use ratatui::layout::Rect;
 use crate::{CellFilter, Duration, Effect, EffectTimer, Shader};
 use crate::widget::EffectSpan;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct PingPong {
     fx: Effect,
     is_reversing: bool,

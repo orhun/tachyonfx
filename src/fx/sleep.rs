@@ -6,7 +6,7 @@ use crate::effect_timer::EffectTimer;
 use crate::widget::EffectSpan;
 use crate::shader::Shader;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Sleep {
     timer: EffectTimer,
 }

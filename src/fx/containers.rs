@@ -6,13 +6,13 @@ use crate::widget::EffectSpan;
 use crate::Interpolation::Linear;
 use crate::shader::Shader;
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Debug)]
 pub struct SequentialEffect {
     effects: Vec<Effect>,
     current: usize,
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Debug)]
 pub struct ParallelEffect {
     effects: Vec<Effect>,
 }

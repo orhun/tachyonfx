@@ -12,7 +12,7 @@ use crate::shader::Shader;
 use crate::CellFilter;
 use crate::{ColorMapper, Duration};
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct SweepIn {
     gradient_length: u16,
     randomness_extent: u16,

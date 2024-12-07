@@ -7,7 +7,7 @@ use crate::widget::EffectSpan;
 use crate::interpolation::Interpolation::Linear;
 use crate::shader::Shader;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct TemporaryEffect {
     effect: Effect,
     timer: EffectTimer,

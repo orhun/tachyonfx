@@ -8,7 +8,7 @@ use crate::{BufferRenderer, CellFilter, Duration, EffectTimer, Interpolatable, R
 /// This shader allows for efficient translation of pre-rendered content without
 /// having to re-render it on every frame. It's particularly useful for large or
 /// complex content that doesn't change frequently.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct TranslateBuffer {
     /// The auxiliary buffer containing the pre-rendered content to be translated.
     aux_buffer: RefCount<Buffer>,

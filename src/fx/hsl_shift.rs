@@ -8,7 +8,7 @@ use crate::shader::Shader;
 use crate::{CellFilter, Duration};
 use crate::{ColorMapper, HslConvertable, Interpolatable};
 
-#[derive(Builder, Clone, Default)]
+#[derive(Builder, Clone, Default, Debug)]
 pub struct HslShift {
     #[builder(into)]
     timer: EffectTimer,

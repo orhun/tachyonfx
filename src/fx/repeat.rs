@@ -6,7 +6,7 @@ use crate::effect::Effect;
 use crate::widget::EffectSpan;
 use crate::shader::Shader;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Repeat {
     fx: Effect,
     mode: RepeatMode,
@@ -124,7 +124,7 @@ impl Shader for Repeat {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum RepeatMode {
     Forever,
     Times(u32),

@@ -1,3 +1,4 @@
+use std::fmt;
 use ratatui::buffer::Cell;
 use ratatui::layout;
 use ratatui::layout::{Margin, Position, Rect};
@@ -245,6 +246,44 @@ impl CellPredicate {
 impl CellFilter {
     pub fn selector(&self, area: Rect) -> CellPredicate {
         CellPredicate::new(area, self.clone())
+    }
+}
+
+impl fmt::Debug for CellFilter {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            CellFilter::All => write!(f, "All"),
+            CellFilter::FgColor(color) => write!(f, "FgColor({:?})", color),
+            CellFilter::BgColor(color) => write!(f, "BgColor({:?})", color),
+            CellFilter::Inner(margin) => write!(f, "Inner({:?})", margin),
+            CellFilter::Outer(margin) => write!(f, "Outer({:?})", margin),
+            CellFilter::Text => write!(f, "Text"),
+            CellFilter::AllOf(filters) => {
+                f.debug_tuple("AllOf")
+                    .field(filters)
+                    .finish()
+            },
+            CellFilter::AnyOf(filters) => {
+                f.debug_tuple("AnyOf")
+                    .field(filters)
+                    .finish()
+            },
+            CellFilter::NoneOf(filters) => {
+                f.debug_tuple("NoneOf")
+                    .field(filters)
+                    .finish()
+            },
+            CellFilter::Not(filter) => {
+                f.debug_tuple("Not")
+                    .field(filter)
+                    .finish()
+            },
+            CellFilter::Layout(layout, idx) => {
+                write!(f, "Layout({:?}, {})", layout, idx)
+            },
+            CellFilter::PositionFn(_) => write!(f, "PositionFn(<function>)"),
+            CellFilter::EvalCell(_) => write!(f, "EvalCell(<function>)"),
+        }
     }
 }
 

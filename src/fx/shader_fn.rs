@@ -1,3 +1,5 @@
+use std::fmt;
+use std::fmt::Debug;
 use bon::{bon, builder, Builder};
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
@@ -6,7 +8,7 @@ use crate::{ref_count, CellFilter, CellIterator, Duration, EffectTimer, RefCount
 use crate::fx::invoke_fn;
 use crate::ThreadSafetyMarker;
 
-#[derive(Builder, Clone)]
+#[derive(Builder, Clone, Debug)]
 pub struct ShaderFn<S: Clone> {
     state: S,
     original_state: Option<S>,
@@ -51,6 +53,7 @@ impl<S> ShaderFnSignature<S> {
 }
 
 /// Context provided to the shader function, containing timing and area information.
+#[derive(Debug)]
 pub struct ShaderFnContext<'a> {
     pub last_tick: Duration,
     pub timer: &'a EffectTimer,
@@ -128,7 +131,7 @@ impl<S: Clone + ThreadSafetyMarker + 'static> ShaderFn<S> {
 }
 
 
-impl<S: Clone + ThreadSafetyMarker + 'static> Shader for ShaderFn<S> {
+impl<S: Clone + ThreadSafetyMarker + Debug + 'static> Shader for ShaderFn<S> {
     fn name(&self) -> &'static str {
         self.name
     }
@@ -183,5 +186,14 @@ impl<S: Clone + ThreadSafetyMarker + 'static> Shader for ShaderFn<S> {
     fn reset(&mut self) {
         self.timer.reset();
         self.state = self.original_state.as_ref().unwrap().clone();
+    }
+}
+
+impl<S> Debug for ShaderFnSignature<S> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            ShaderFnSignature::Iter(_) => write!(f, "Iter(<function>)"),
+            ShaderFnSignature::Buffer(_) => write!(f, "Buffer(<function>)"),
+        }
     }
 }

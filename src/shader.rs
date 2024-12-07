@@ -1,3 +1,4 @@
+use std::fmt::Debug;
 use crate::cell_iter::CellIterator;
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
@@ -14,7 +15,7 @@ use crate::EffectTimer;
 /// When implementing this trait, you typically only need to override `execute()`. The default
 /// `process()` implementation handles timer management and calls `execute()` with the current
 /// alpha value. Only override `process()` if you need custom timer handling.
-pub trait Shader: ThreadSafetyMarker {
+pub trait Shader: ThreadSafetyMarker + Debug {
     fn name(&self) -> &'static str;
 
     /// Processes the shader for the given duration. The default implementation:

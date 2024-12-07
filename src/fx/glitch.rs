@@ -26,7 +26,7 @@ pub struct GlitchCell {
 }
 
 /// applies a glitch effect to random parts of the screen.
-#[derive(Builder, Clone)]
+#[derive(Builder, Clone, Debug)]
 pub struct Glitch {
     cell_glitch_ratio: f32,
     action_start_delay_ms: Range<u32>,

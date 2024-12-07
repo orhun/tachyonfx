@@ -53,13 +53,6 @@ mod examples {
         fx::fade_to(c, c, (1000, Interpolation::CircOut))
     }
 
-    pub fn reset_screen_fx() -> Effect {
-        let color = Theme::oob_color();
-        // runs indefinitely; immediately sets the target color,
-        // due to the timer being set to zero duration.
-        fx::never_complete(fx::fade_to(color, color, 0))
-    }
-
     pub fn sweep_in() -> Effect {
         // sweep in from the left with a gradient length of 10 and no randomness
         let c = Theme::oob_color();
@@ -141,7 +134,6 @@ mod examples {
 
     pub fn ping_pong() -> Effect {
         // fade in the entire area from the out-of-bounds color
-        let c = Theme::quote().bg.unwrap();
         let timer = (500, Interpolation::CircOut);
         fx::ping_pong(fx::coalesce(timer))
     }
@@ -199,6 +191,7 @@ mod examples {
         }).with_cell_selection(CellFilter::Text)
     }
 
+    #[allow(dead_code)]
     pub fn translate_buf() -> Effect {
         use tachyonfx::*;
 
@@ -259,7 +252,7 @@ fn run_example<F: FnOnce() -> Effect>(
     // in order to easily split the recording into individual files per effect,
     // we try to keep the total duration of each effect to 2 seconds.
     let remaining = 3000u32.saturating_sub(started.elapsed().as_millis() as u32);
-    run_with_effect(terminal, || reset(remaining))?;
+    run_with_effect(terminal, || reset(remaining as _))?;
 
     Ok(())
 }

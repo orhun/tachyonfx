@@ -5,13 +5,13 @@ use crate::Interpolation::Linear;
 use crate::widget::EffectSpan;
 
 /// Specifies the position where the additional duration should be applied in a `Prolong` effect.
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub(crate) enum ProlongPosition {
     Start,
     End,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Prolong {
     inner: Effect,
     timer: EffectTimer,

@@ -6,7 +6,7 @@ use crate::CellFilter;
 use crate::shader::Shader;
 
 /// consumes any remaining duration for a single tick.
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Debug)]
 pub struct ConsumeTick {
     has_consumed_tick: bool,
 }

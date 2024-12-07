@@ -5,7 +5,7 @@ use crate::effect::Effect;
 use crate::widget::EffectSpan;
 use crate::shader::Shader;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct NeverComplete {
     effect: Effect,
 }

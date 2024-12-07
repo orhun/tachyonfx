@@ -8,7 +8,7 @@ use ratatui::widgets::Widget;
 
 use tachyonfx::{CellFilter, Duration, Effect, EffectTimer, Shader};
 
-#[derive(Builder, Clone)]
+#[derive(Builder, Clone, Debug)]
 pub struct OpenWindow {
     title: Line<'static>,
     pre_render_fx: Option<Effect>,    // for setting up geometry etc

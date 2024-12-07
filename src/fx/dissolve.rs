@@ -6,10 +6,7 @@ use crate::shader::Shader;
 use crate::simple_rng::SimpleRng;
 use crate::{CellFilter, Duration};
 
-// todo: generalize effect (c.set_char(' ')) to be more flexible
-// todo: configurable gradient cycle
-
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Dissolve {
     timer: EffectTimer,
     area: Option<Rect>,

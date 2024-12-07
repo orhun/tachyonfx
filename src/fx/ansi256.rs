@@ -7,7 +7,7 @@ use crate::color_mapper::ColorMapper;
 use crate::CellFilter;
 use crate::shader::Shader;
 
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Debug)]
 pub struct Ansi256 {
     area: Option<Rect>,
 }

@@ -11,7 +11,7 @@ use crate::interpolation::Interpolatable;
 use crate::rect_ext::CenteredShrink;
 use crate::shader::Shader;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ResizeArea {
     fx: Option<Effect>,
     area: Option<Rect>,

@@ -8,6 +8,7 @@ use ratatui::layout::Rect;
 /// Represents an effect that can be applied to terminal cells.
 /// The `Effect` struct wraps a shader, allowing it to be configured
 /// and applied to a specified area and cell selection.
+#[derive(Debug)]
 pub struct Effect {
     shader: Box<dyn Shader>,
 }

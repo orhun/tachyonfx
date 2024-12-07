@@ -8,7 +8,7 @@ use crate::effect_timer::EffectTimer;
 use crate::shader::Shader;
 use crate::{CellFilter, Duration, Interpolatable};
 
-#[derive(Builder, Clone)]
+#[derive(Builder, Clone, Debug)]
 pub struct FadeColors {
     fg: Option<Color>,
     bg: Option<Color>,

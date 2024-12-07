@@ -22,7 +22,7 @@ use crate::interpolation::Interpolation;
 /// let c: EffectTimer = 500.into();
 /// let d: EffectTimer = (500, Interpolation::Linear).into();
 /// ```
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, Debug)]
 pub struct EffectTimer {
     remaining: Duration,
     total: Duration,

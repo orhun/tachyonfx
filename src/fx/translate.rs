@@ -8,7 +8,7 @@ use crate::effect_timer::EffectTimer;
 use crate::interpolation::Interpolatable;
 use crate::shader::Shader;
 
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Debug)]
 pub struct Translate {
     fx: Option<Effect>,
     area: Option<Rect>,

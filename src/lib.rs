@@ -13,6 +13,7 @@ mod color_mapper;
 mod color_ext;
 mod rect_ext;
 mod render_effect;
+mod motion;
 
 pub mod fx;
 pub mod widget;
@@ -36,4 +37,5 @@ pub use interpolation::*;
 pub use buffer_renderer::*;
 pub use simple_rng::*;
 pub use duration::Duration;
+pub use motion::*;
 pub use features::{ref_count, RefCount, ThreadSafetyMarker};

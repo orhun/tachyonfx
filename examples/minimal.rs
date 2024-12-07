@@ -8,11 +8,7 @@ use ratatui::{
     prelude::*,
     widgets::{Block, Clear},
 };
-use tachyonfx::{
-    fx::{self, Direction as FxDirection, Glitch},
-    CenteredShrink, Duration, Effect, EffectRenderer, EffectTimer, Interpolation, IntoEffect,
-    Shader, SimpleRng,
-};
+use tachyonfx::{fx::{self, Glitch}, CenteredShrink, Duration, Effect, EffectRenderer, EffectTimer, Interpolation, IntoEffect, Motion, Shader, SimpleRng};
 
 fn main() -> io::Result<()> {
     let mut terminal = ratatui::init();
@@ -31,7 +27,7 @@ fn main() -> io::Result<()> {
     let mut effect = fx::sequence(&[
         // first we "sweep in" the text from the left, before reversing the effect
         fx::ping_pong(fx::sweep_in(
-            FxDirection::LeftToRight,
+            Motion::LeftToRight,
             10,
             0,
             Color::DarkGray,

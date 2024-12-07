@@ -12,9 +12,20 @@ use ratatui::text::{Line, Span};
 use ratatui::widgets::{BorderType, Borders, Clear, StatefulWidget, Widget};
 use ratatui::{text, Frame};
 
-use tachyonfx::fx::{never_complete, parallel, repeating, sequence, sleep, timed_never_complete, with_duration, Direction};
-use tachyonfx::CellFilter::{AllOf, Inner, Not, Outer};
-use tachyonfx::{fx, CellFilter, CenteredShrink, Duration, Effect, EffectRenderer, HslConvertable, Interpolation, Shader};
+use tachyonfx::{
+    CellFilter,
+    CellFilter::{AllOf, Inner, Not, Outer},
+    CenteredShrink,
+    Duration,
+    Effect,
+    EffectRenderer,
+    HslConvertable,
+    Interpolation,
+    Motion,
+    Shader,
+    fx,
+    fx::{never_complete, parallel, repeating, sequence, sleep, timed_never_complete, with_duration},
+};
 use CellFilter::Text;
 use Interpolation::*;
 
@@ -279,7 +290,7 @@ fn stylized_window_fx() -> Effect {
                     ),
                     fx::fade_to(Color::Black, Color::Black, (500, CircInOut)),
                 ]),
-                fx::slide_in(Direction::UpToDown, 10, 0, Dark0, (900, QuadOut)),
+                fx::slide_in(Motion::UpToDown, 10, 0, Dark0, (900, QuadOut)),
             ]),
         ]).with_cell_selection(content_area),
     ]))

@@ -14,8 +14,7 @@ use tachyonfx::{fx, CellFilter, CenteredShrink, Duration, Effect, EffectRenderer
 mod examples {
     use ratatui::layout::Offset;
     use super::*;
-    use tachyonfx::fx::{Direction};
-    use tachyonfx::{HslConvertable};
+    use tachyonfx::{Motion, HslConvertable};
 
     pub fn coalesce() -> Effect {
         fx::coalesce((1000, Interpolation::BounceOut))
@@ -57,28 +56,28 @@ mod examples {
         // sweep in from the left with a gradient length of 10 and no randomness
         let c = Theme::oob_color();
         let timer = (1000, Interpolation::Linear);
-        fx::sweep_in(Direction::LeftToRight, 10, 0, c, timer)
+        fx::sweep_in(Motion::LeftToRight, 10, 0, c, timer)
     }
 
     pub fn sweep_out() -> Effect {
         // sweep out to the bottom-right corner
         let c = Theme::oob_color();
         let timer = (1000, Interpolation::Linear);
-        fx::sweep_out(Direction::RightToLeft, 10, 0, c, timer)
+        fx::sweep_out(Motion::RightToLeft, 10, 0, c, timer)
     }
 
     pub fn slide_in() -> Effect {
         // slide in from the top, with some randomness
         let c = Theme::oob_color();
         let timer = (1000, Interpolation::Linear);
-        fx::slide_in(Direction::UpToDown, 10, 0, c, timer)
+        fx::slide_in(Motion::UpToDown, 10, 0, c, timer)
     }
 
     pub fn slide_out() -> Effect {
         // slide out to the right, with some randomness
         let c = Theme::oob_color();
         let timer = (1000, Interpolation::Linear);
-        fx::slide_out(Direction::LeftToRight, 24, 0, c, timer)
+        fx::slide_out(Motion::LeftToRight, 24, 0, c, timer)
     }
 
     pub fn hsl_shift() -> Effect {

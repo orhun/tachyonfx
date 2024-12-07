@@ -15,8 +15,8 @@ use ratatui::text::{Line, Span, Text};
 use ratatui::widgets::{Axis, Block, Chart, Clear, Dataset, GraphType, LegendPosition, StatefulWidget, Widget};
 use ratatui::Frame;
 
-use tachyonfx::fx::{parallel, repeating, sequence, Direction};
-use tachyonfx::{fx, CellFilter, CenteredShrink, Duration, Effect, EffectRenderer, EffectTimer, Interpolation, Shader};
+use tachyonfx::fx::{parallel, repeating, sequence};
+use tachyonfx::{fx, CellFilter, CenteredShrink, Duration, Effect, EffectRenderer, EffectTimer, Interpolation, Motion, Shader};
 use Gruvbox::OrangeBright;
 use Interpolation::*;
 
@@ -42,7 +42,7 @@ impl App {
     fn new() -> Self {
         let tween_idx = 0;
         let shortcut_fx = repeating(sequence(&[
-            fx::sweep_in(Direction::RightToLeft, 20, 0, Dark0, EffectTimer::from_ms(1000, QuadIn)),
+            fx::sweep_in(Motion::RightToLeft, 20, 0, Dark0, EffectTimer::from_ms(1000, QuadIn)),
             fx::sleep(5_000),
             parallel(&[
                 fx::fade_to_fg(Dark0, EffectTimer::from_ms(500, BounceOut)),
@@ -234,13 +234,13 @@ fn chart_fx() -> Effect {
 
     parallel(&[
         // chart axis
-        fx::sweep_in(Direction::UpToDown, 15, 0, Dark0, timer)
+        fx::sweep_in(Motion::UpToDown, 15, 0, Dark0, timer)
             .with_cell_selection(CellFilter::FgColor(Light2.into())),
         // chart data
         sequence(&[
             fx::timed_never_complete(duration, fx::dissolve(0))
                 .with_cell_selection(CellFilter::FgColor(OrangeBright.into())),
-            fx::sweep_in(Direction::LeftToRight, 15, 0, Dark0, timer)
+            fx::sweep_in(Motion::LeftToRight, 15, 0, Dark0, timer)
                 .with_cell_selection(CellFilter::FgColor(OrangeBright.into())),
         ]),
     ])

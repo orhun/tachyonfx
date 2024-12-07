@@ -86,7 +86,7 @@ pub use shader_fn::*;
 pub use repeat::RepeatMode;
 use slide::SlideCell;
 pub use direction::*;
-use crate::{CellIterator, Duration, RefCount, ThreadSafetyMarker};
+use crate::{CellIterator, Duration, Motion, RefCount, ThreadSafetyMarker};
 use crate::effect::{Effect, IntoEffect};
 use crate::effect_timer::EffectTimer;
 use crate::fx::ansi256::Ansi256;
@@ -355,7 +355,7 @@ pub fn repeating(effect: Effect) -> Effect {
 ///
 /// Refer to [`sweep_in`](fn.sweep_in.html) for more information.
 pub fn sweep_out<T: Into<EffectTimer>, C: Into<Color>>(
-    direction: Direction,
+    direction: Motion,
     gradient_length: u16,
     randomness: u16,
     faded_color: C,
@@ -408,12 +408,11 @@ pub fn sweep_out<T: Into<EffectTimer>, C: Into<Color>>(
 ///
 /// Basic usage:
 /// ```
-/// use tachyonfx::{fx, EffectTimer, Interpolation};
-/// use tachyonfx::fx::Direction;
+/// use tachyonfx::{fx, EffectTimer, Interpolation, Motion};
 /// use ratatui::style::Color;
 ///
 /// let sweep_effect = fx::sweep_in(
-///     Direction::LeftToRight,
+///     Motion::LeftToRight,
 ///     10,
 ///     0,
 ///     Color::Blue,
@@ -423,12 +422,11 @@ pub fn sweep_out<T: Into<EffectTimer>, C: Into<Color>>(
 ///
 /// With randomness:
 /// ```
-/// use tachyonfx::{fx, EffectTimer, Interpolation};
-/// use tachyonfx::fx::Direction;
+/// use tachyonfx::{fx, EffectTimer, Interpolation, Motion};
 /// use ratatui::style::Color;
 ///
 /// let sweep_effect = fx::sweep_in(
-///     Direction::UpToDown,
+///     Motion::UpToDown,
 ///     15,
 ///     5,
 ///     Color::Cyan,
@@ -440,7 +438,7 @@ pub fn sweep_out<T: Into<EffectTimer>, C: Into<Color>>(
 ///
 /// * [`sweep_out`](fn.sweep_out.html) - For the reverse effect.
 pub fn sweep_in<T: Into<EffectTimer>, C: Into<Color>>(
-    direction: Direction,
+    direction: Motion,
     gradient_length: u16,
     randomness: u16,
     faded_color: C,
@@ -483,7 +481,7 @@ pub fn sweep_in<T: Into<EffectTimer>, C: Into<Color>>(
 /// fx::slide_in(Direction::UpToDown, 10, 0, c, timer)
 /// ```
 pub fn slide_in<T: Into<EffectTimer>, C: Into<Color>>(
-    direction: Direction,
+    direction: Motion,
     gradient_length: u16,
     randomness: u16,
     color_behind_cells: C,
@@ -521,7 +519,7 @@ pub fn slide_in<T: Into<EffectTimer>, C: Into<Color>>(
 /// fx::slide_in(Direction::UpToDown, 10, 0, c, timer)
 /// ```
 pub fn slide_out<T: Into<EffectTimer>, C: Into<Color>>(
-    direction: Direction,
+    direction: Motion,
     gradient_length: u16,
     randomness: u16,
     color_behind_cells: C,
@@ -529,10 +527,10 @@ pub fn slide_out<T: Into<EffectTimer>, C: Into<Color>>(
 ) -> Effect {
     let timer: EffectTimer = timer.into();
     let timer = match direction {
-        Direction::LeftToRight => timer,
-        Direction::RightToLeft => timer.reversed(),
-        Direction::UpToDown    => timer,
-        Direction::DownToUp    => timer.reversed(),
+        Motion::LeftToRight => timer,
+        Motion::RightToLeft => timer.reversed(),
+        Motion::UpToDown    => timer,
+        Motion::DownToUp    => timer.reversed(),
     };
 
     SlideCell::builder()
@@ -1079,11 +1077,11 @@ mod tests {
     use super::*;
     use crate::Shader;
 
-    const DIRECTIONS: [Direction; 4] = [
-        Direction::DownToUp,
-        Direction::UpToDown,
-        Direction::LeftToRight,
-        Direction::RightToLeft,
+    const DIRECTIONS: [Motion; 4] = [
+        Motion::DownToUp,
+        Motion::UpToDown,
+        Motion::LeftToRight,
+        Motion::RightToLeft,
     ];
 
     #[test]
@@ -1143,10 +1141,10 @@ mod tests {
         let c = Color::Red;
 
         let directions = [
-            Direction::DownToUp,
-            Direction::UpToDown,
-            Direction::LeftToRight,
-            Direction::RightToLeft,
+            Motion::DownToUp,
+            Motion::UpToDown,
+            Motion::LeftToRight,
+            Motion::RightToLeft,
         ];
 
         directions.iter().for_each(|dir| {

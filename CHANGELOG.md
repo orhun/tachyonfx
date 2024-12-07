@@ -1,4 +1,9 @@
 # Changelog
+
+### Changed/Deprecated
+- `Motion` replaces `Direction` to to avoid name clashing with rataui's `Direction` enum.
+  The deprecated `Direction` is a type alias for `Motion`.
+
 ### Fixed
 - `fx::with_duration`: clarified misleading documentation.
 

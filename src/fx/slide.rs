@@ -4,7 +4,7 @@ use ratatui::layout::{Position, Rect};
 use ratatui::style::Color;
 
 use crate::fx::sliding_window_alpha::SlidingWindowAlpha;
-use crate::fx::{Direction, DirectionalVariance};
+use crate::{Motion, DirectionalVariance};
 use crate::{CellFilter, Duration, EffectTimer, Shader};
 
 /// A shader that applies a directional sliding effect to terminal cells.
@@ -13,7 +13,7 @@ pub struct SlideCell {
     /// The color behind the sliding cell.
     color_behind_cell: Color,
     /// The direction of the sliding effect.
-    direction: Direction,
+    direction: Motion,
     /// The length of the gradient used for the sliding effect.
     gradient_length: u16,
     /// The extent of randomness applied to the sliding effect.
@@ -35,8 +35,8 @@ impl SlideCell {
         let char_idx = (LAST_IDX as f32 * alpha).round() as usize;
 
         match self.direction {
-            Direction::LeftToRight | Direction::RightToLeft => SHRINK_H[char_idx],
-            Direction::UpToDown    | Direction::DownToUp    => SHRINK_V[char_idx],
+            Motion::LeftToRight | Motion::RightToLeft => SHRINK_H[char_idx],
+            Motion::UpToDown    | Motion::DownToUp    => SHRINK_V[char_idx],
         }
     }
 }
@@ -82,7 +82,7 @@ impl Shader for SlideCell {
         let area = area.intersection(buf.area);
         let cell_filter = self.cell_filter.selector(area);
 
-        if self.randomness_extent == 0 || [Direction::LeftToRight, Direction::RightToLeft].contains(&direction) {
+        if self.randomness_extent == 0 || [Motion::LeftToRight, Motion::RightToLeft].contains(&direction) {
             for y in area.y..area.bottom() {
                 let row_variance = axis_jitter.next();
                 for x in area.x..area.right() {

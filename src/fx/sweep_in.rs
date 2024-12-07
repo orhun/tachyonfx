@@ -6,7 +6,7 @@ use Interpolation::CircOut;
 
 use crate::effect_timer::EffectTimer;
 use crate::fx::sliding_window_alpha::SlidingWindowAlpha;
-use crate::fx::{Direction, DirectionalVariance};
+use crate::{Motion, DirectionalVariance};
 use crate::interpolation::{Interpolatable, Interpolation};
 use crate::shader::Shader;
 use crate::CellFilter;
@@ -18,7 +18,7 @@ pub struct SweepIn {
     randomness_extent: u16,
     faded_color: Color,
     timer: EffectTimer,
-    direction: Direction,
+    direction: Motion,
     area: Option<Rect>,
     cell_filter: CellFilter,
 }
@@ -26,7 +26,7 @@ pub struct SweepIn {
 
 impl SweepIn {
     pub fn new(
-        direction: Direction,
+        direction: Motion,
         gradient_length: u16,
         randomness: u16,
         faded_color: Color,
@@ -92,7 +92,7 @@ impl Shader for SweepIn {
         let area = area.intersection(buf.area); // safe area
         let cell_filter = self.cell_filter.selector(area);
 
-        if self.randomness_extent == 0 || [Direction::LeftToRight, Direction::RightToLeft].contains(&direction) {
+        if self.randomness_extent == 0 || [Motion::LeftToRight, Motion::RightToLeft].contains(&direction) {
             for y in area.y..area.bottom() {
                 let row_variance = axis_jitter.next();
                 for x in area.x..area.right() {

@@ -19,9 +19,8 @@ use tachyonfx::{fx::{
     never_complete,
     parallel,
     sequence,
-    Direction,
     Glitch,
-}, CellFilter, CenteredShrink, Duration, Effect, EffectRenderer, HslConvertable, Interpolation, IntoEffect, Shader, SimpleRng};
+}, CellFilter, CenteredShrink, Duration, Effect, EffectRenderer, HslConvertable, Interpolation, IntoEffect, Motion, Shader, SimpleRng};
 use Gruvbox::{Light3, Orange, OrangeBright};
 use Interpolation::*;
 
@@ -238,23 +237,23 @@ impl EffectsRepository {
 
         let effects = vec![
             ("sweep in",
-                fx::sweep_in(Direction::LeftToRight, 30, 0, screen_bg, (slow, QuadOut))),
+                fx::sweep_in(Motion::LeftToRight, 30, 0, screen_bg, (slow, QuadOut))),
             ("irregular sweep out/sweep in", sequence(&[
-                fx::sweep_out(Direction::DownToUp, 5, 20, bg, (2000, QuadOut)),
-                fx::sweep_in(Direction::UpToDown, 5, 20, bg, (2000, QuadOut)),
-                fx::sweep_out(Direction::UpToDown, 5, 20, bg, (2000, QuadOut)),
-                fx::sweep_in(Direction::DownToUp, 5, 20, bg, (2000, QuadOut)),
+                fx::sweep_out(Motion::DownToUp, 5, 20, bg, (2000, QuadOut)),
+                fx::sweep_in(Motion::UpToDown, 5, 20, bg, (2000, QuadOut)),
+                fx::sweep_out(Motion::UpToDown, 5, 20, bg, (2000, QuadOut)),
+                fx::sweep_in(Motion::DownToUp, 5, 20, bg, (2000, QuadOut)),
             ])),
             ("coalesce",
                 fx::coalesce((medium, CubicOut))),
             ("slide in/out", fx::repeating(sequence(&[
                 parallel(&[
                     fx::fade_from_fg(bg, (2000, ExpoInOut)),
-                    fx::slide_in(Direction::UpToDown, 20, 0, Dark0Hard, medium),
+                    fx::slide_in(Motion::UpToDown, 20, 0, Dark0Hard, medium),
                 ]),
                 fx::sleep(medium),
                 fx::prolong_end(medium,
-                    fx::slide_out(Direction::LeftToRight, 80, 0, Dark0Hard, medium),
+                    fx::slide_out(Motion::LeftToRight, 80, 0, Dark0Hard, medium),
                 ),
             ]))),
             ("change hue, saturation and lightness", sequence(&[

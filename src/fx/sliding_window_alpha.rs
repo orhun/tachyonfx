@@ -1,6 +1,6 @@
 use std::ops::Range;
 use ratatui::layout::{Position, Rect};
-use crate::fx::Direction;
+use crate::Motion;
 
 pub struct SlidingWindowAlpha {
     alpha_fn: fn(Position, Range<f32>, f32) -> f32,
@@ -12,22 +12,22 @@ pub struct SlidingWindowAlpha {
 impl SlidingWindowAlpha {
     #[builder(finish_fn = build)]
     pub fn builder(
-        direction: Direction,
+        direction: Motion,
         area: Rect,
         progress: f32,
         gradient_len: u16,
     ) -> Self {
         let alpha_fn = match direction {
-            Direction::UpToDown    => slide_up,
-            Direction::DownToUp    => slide_down,
-            Direction::LeftToRight => slide_left,
-            Direction::RightToLeft => slide_right,
+            Motion::UpToDown    => slide_up,
+            Motion::DownToUp    => slide_down,
+            Motion::LeftToRight => slide_left,
+            Motion::RightToLeft => slide_right,
         };
 
         let gradient = match direction {
-            Direction::LeftToRight | Direction::RightToLeft =>
+            Motion::LeftToRight | Motion::RightToLeft =>
                 gradient(progress, area.x, area.width, gradient_len),
-            Direction::UpToDown | Direction::DownToUp =>
+            Motion::UpToDown | Motion::DownToUp =>
                 gradient(progress, area.y, area.height, gradient_len),
         };
 

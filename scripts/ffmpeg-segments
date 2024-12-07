@@ -24,7 +24,9 @@ effects=(
     fade_from_fg
     fade_to_fg
     coalesce
+    coalesce_from
     dissolve
+    dissolve_to
     sweep_in
     sweep_out
     slide_in

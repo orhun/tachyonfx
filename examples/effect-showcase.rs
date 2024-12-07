@@ -20,8 +20,20 @@ mod examples {
         fx::coalesce((1000, Interpolation::BounceOut))
     }
 
+    pub fn coalesce_from() -> Effect {
+        let c = Theme::oob_color();
+        let style = Style::default().bg(c);
+        fx::coalesce_from(style, (1000, Interpolation::ExpoInOut))
+    }
+
     pub fn dissolve() -> Effect {
         fx::dissolve(1000) // linear interpolation
+    }
+
+    pub fn dissolve_to() -> Effect {
+        let c = Theme::oob_color();
+        let style = Style::default().bg(c);
+        fx::dissolve_to(style, (1000, Interpolation::CircOut))
     }
 
     pub fn fade_from_fg() -> Effect {
@@ -177,7 +189,7 @@ mod examples {
         let no_state = (); // no state to keep track of
 
         fx::effect_fn_buf(no_state, timer, |_state, context, buf| {
-            let offset = context.timer.remaining().as_millis() as usize;
+            let offset = context.timer.remaining().as_millis() as usize / 30;
 
             let cell_pred = context.filter.unwrap_or(CellFilter::All).selector(buf.area);
             for (i, pos) in buf.area.positions().enumerate() {
@@ -216,7 +228,9 @@ fn main() -> io::Result<()> {
     run_example(&mut terminal, &examples::fade_from_fg)?;
     run_example(&mut terminal, &examples::fade_to_fg)?;
     run_example(&mut terminal, &examples::coalesce)?;
+    run_example(&mut terminal, &examples::coalesce_from)?;
     run_example(&mut terminal, &examples::dissolve)?;
+    run_example(&mut terminal, &examples::dissolve_to)?;
     run_example(&mut terminal, &examples::sweep_in)?;
     run_example(&mut terminal, &examples::sweep_out)?;
     run_example(&mut terminal, &examples::slide_in)?;

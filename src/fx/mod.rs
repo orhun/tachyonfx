@@ -20,14 +20,16 @@
 //! ## Text/Character Effects ✍️
 //! Text effects modify the actual characters or their placement in the terminal. These are perfect for transitions, reveals, and dynamic text animations.
 //!
-//! | Effect              | Description | Example  |
-//! |---------------------|-------------|----------|
-//! | [`coalesce()`] ⬆️  | Reforms dissolved foreground | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/coalesce.gif) |
-//! | [`dissolve()`] ⬇️  | Dissolves foreground content | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/dissolve.gif) |
-//! | [`slide_in()`] ↔️  | Slides content with gradient | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/slide_in.gif) |
-//! | [`slide_out()`] ↔️ | Slides content with gradient | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/slide_out.gif) |
-//! | [`sweep_in()`] ↔️  | Sweeps content with color    | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/sweep_in.gif) |
-//! | [`sweep_out()`] ↔️ | Sweeps content with color    | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/sweep_out.gif) |
+//! | Effect                 | Description | Example  |
+//! |------------------------|-------------|----------|
+//! | [`coalesce()`] ⬆️      | Reforms dissolved foreground | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/coalesce.gif) |
+//! | [`coalesce_from()`] ⬆️ | Reforms dissolved foreground | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/coalesce_from.gif) |
+//! | [`dissolve()`] ⬇️      | Dissolves foreground content | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/dissolve.gif) |
+//! | [`dissolve_to()`] ⬇️   | Dissolves foreground content | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/dissolve_to.gif) |
+//! | [`slide_in()`] ↔️      | Slides content with gradient | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/slide_in.gif) |
+//! | [`slide_out()`] ↔️     | Slides content with gradient | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/slide_out.gif) |
+//! | [`sweep_in()`] ↔️      | Sweeps content with color    | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/sweep_in.gif) |
+//! | [`sweep_out()`] ↔️     | Sweeps content with color    | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/sweep_out.gif) |
 //!
 //! ## Timing and Control Effects ⏱️
 //! Control effects modify how other effects behave over time. They're essential for creating complex animations and controlling the flow of multiple effects.
@@ -847,7 +849,7 @@ pub fn coalesce<T: Into<EffectTimer>>(timer: T) -> Effect {
 /// # Arguments
 /// * `timer` - Controls the duration and interpolation of the effect
 /// * `style` - The target style to dissolve to
-pub fn coalesce_from<T: Into<EffectTimer>>(timer: T, style: Style) -> Effect {
+pub fn coalesce_from<T: Into<EffectTimer>>(style: Style, timer: T) -> Effect {
     Dissolve::with_style(style, timer.into().reversed())
         .into_effect()
 }

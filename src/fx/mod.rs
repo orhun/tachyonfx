@@ -814,7 +814,7 @@ pub fn dissolve<T: Into<EffectTimer>>(timer: T) -> Effect {
 
 /// Dissolves both the text and background to the specified style over the specified duration.
 ///
-/// This is similar to [`dissolve`] but also transitions the background to match the target style.
+/// This is similar to [`dissolve()`] but also transitions the background to match the target style.
 ///
 /// # Arguments
 /// * `timer` - Controls the duration and interpolation of the effect

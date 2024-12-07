@@ -839,11 +839,18 @@ pub fn coalesce<T: Into<EffectTimer>>(timer: T) -> Effect {
         .into_effect()
 }
 
+/// Reforms both the text and background to the specified style over the specified duration.
+/// The reverse of [dissolve_to()].
+///
+/// This is similar to [`coalesce`] but also transitions the background to match the target style.
+///
+/// # Arguments
+/// * `timer` - Controls the duration and interpolation of the effect
+/// * `style` - The target style to dissolve to
 pub fn coalesce_from<T: Into<EffectTimer>>(timer: T, style: Style) -> Effect {
     Dissolve::with_style(style, timer.into().reversed())
         .into_effect()
 }
-
 
 /// Fades the foreground color to the specified color over the specified duration.
 ///

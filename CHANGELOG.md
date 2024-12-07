@@ -3,6 +3,7 @@
 ### Added
 - `fx::dissolve_to()`: dissolves both the characters and style over the specified duration.
 - `fx::coallesce_from()`: reforms both the characters and style over the specified duration.
+- Example gifs and better rustdoc for the [fx](https://docs.rs/tachyonfx/latest/tachyonfx/fx/index.html) module.
 
 ### Changed/Deprecated
 - `Motion` replaces `Direction` to to avoid name clashing with ratatui's `Direction` enum.

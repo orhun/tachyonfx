@@ -77,7 +77,7 @@
 use std::fmt::Debug;
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Offset, Size};
-use ratatui::style::Color;
+use ratatui::style::{Color, Style};
 
 pub use glitch::Glitch;
 use ping_pong::PingPong;
@@ -755,6 +755,18 @@ pub fn dissolve<T: Into<EffectTimer>>(timer: T) -> Effect {
         .into_effect()
 }
 
+/// Dissolves both the text and background to the specified style over the specified duration.
+///
+/// This is similar to [`dissolve`] but also transitions the background to match the target style.
+///
+/// # Arguments
+/// * `timer` - Controls the duration and interpolation of the effect
+/// * `style` - The target style to dissolve to
+pub fn dissolve_to<T: Into<EffectTimer>>(style: Style, timer: T) -> Effect {
+    Dissolve::with_style(style, timer.into())
+        .into_effect()
+}
+
 /// The reverse of [dissolve()].
 ///
 /// # Examples
@@ -770,6 +782,11 @@ pub fn dissolve<T: Into<EffectTimer>>(timer: T) -> Effect {
 /// ```
 pub fn coalesce<T: Into<EffectTimer>>(timer: T) -> Effect {
     Dissolve::new(timer.into().reversed())
+        .into_effect()
+}
+
+pub fn coalesce_from<T: Into<EffectTimer>>(timer: T, style: Style) -> Effect {
+    Dissolve::with_style(style, timer.into().reversed())
         .into_effect()
 }
 

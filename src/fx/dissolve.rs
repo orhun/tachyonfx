@@ -1,14 +1,15 @@
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
-
+use ratatui::style::Style;
 use crate::effect_timer::EffectTimer;
 use crate::shader::Shader;
 use crate::simple_rng::SimpleRng;
 use crate::{CellFilter, Duration};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct Dissolve {
     timer: EffectTimer,
+    dissolved_style: Option<Style>,
     area: Option<Rect>,
     cell_filter: CellFilter,
     lcg: SimpleRng,
@@ -20,9 +21,18 @@ impl Dissolve {
     ) -> Self {
         Self {
             timer: lifetime,
-            area: None,
-            cell_filter: CellFilter::All,
-            lcg: SimpleRng::default(),
+            ..Self::default()
+        }
+    }
+
+    pub fn with_style(
+        style: Style,
+        lifetime: EffectTimer,
+    ) -> Self {
+        Self {
+            dissolved_style: Some(style),
+            timer: lifetime,
+            ..Self::default()
         }
     }
 }
@@ -36,9 +46,20 @@ impl Shader for Dissolve {
         let alpha = self.timer.alpha();
         let cell_iter = self.cell_iter(buf, area);
         let mut lcg = self.lcg;
-        cell_iter
-            .filter(|_| alpha > lcg.gen_f32())
-            .for_each(|(_, c)| { c.set_char(' '); });
+
+        let dissolved_cells = cell_iter
+            .filter(|_| alpha > lcg.gen_f32());
+
+        if let Some(style) = self.dissolved_style {
+            dissolved_cells.for_each(|(_, c)| {
+                c.set_char(' ');
+                c.set_style(style);
+            });
+        } else {
+            dissolved_cells.for_each(|(_, c)| {
+                c.set_char(' ');
+            });
+        }
     }
 
     fn done(&self) -> bool {

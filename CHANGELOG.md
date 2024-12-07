@@ -1,7 +1,11 @@
 # Changelog
 
+### Added
+- `fx::dissolve_to()`: dissolves both the characters and style over the specified duration.
+- `fx::coallesce_from()`: reforms both the characters and style over the specified duration.
+
 ### Changed/Deprecated
-- `Motion` replaces `Direction` to to avoid name clashing with rataui's `Direction` enum.
+- `Motion` replaces `Direction` to to avoid name clashing with ratatui's `Direction` enum.
   The deprecated `Direction` is a type alias for `Motion`.
 
 ### Fixed

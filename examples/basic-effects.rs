@@ -244,8 +244,11 @@ impl EffectsRepository {
                 fx::sweep_out(Motion::UpToDown, 5, 20, bg, (2000, QuadOut)),
                 fx::sweep_in(Motion::DownToUp, 5, 20, bg, (2000, QuadOut)),
             ])),
-            ("coalesce",
-                fx::coalesce((medium, CubicOut))),
+            ("coalesce", fx::sequence(&[
+                fx::coalesce((medium, CubicOut)),
+                fx::sleep(medium),
+                fx::prolong_end(medium, fx::dissolve_to(Style::default().bg(screen_bg.color()), medium)),
+            ])),
             ("slide in/out", fx::repeating(sequence(&[
                 parallel(&[
                     fx::fade_from_fg(bg, (2000, ExpoInOut)),

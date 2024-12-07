@@ -148,6 +148,10 @@ impl EffectTimer {
         self.interpolation.alpha(a)
     }
 
+    pub fn remaining(&self) -> Duration {
+        self.remaining
+    }
+
     pub fn duration(&self) -> Duration {
         self.total
     }

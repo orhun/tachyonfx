@@ -3,8 +3,8 @@
 [![Crate Badge]][Crate] [![API Badge]][API] [![Deps.rs
 Badge]][Deps.rs]
 
-tachyonfx is a [ratatui][ratatui] library for creating shader-like effects in terminal UIs. It provides
-a collection of stateful effects that can enhance the visual appeal of terminal applications through color
+tachyonfx (_ˈtakɪɒn ˌɛfˈɛks_) is a [ratatui][ratatui] library for creating shader-like effects in terminal UIs. It
+provides a collection of stateful effects that can enhance the visual appeal of terminal applications through color
 transformations, animations, and complex effect combinations.
 
 ![demo](images/demo-0.6.0.gif)
@@ -82,7 +82,7 @@ The library includes a variety of effects, loosely categorized as follows:
 - **repeating:**            Repeats the effect indefinitely.
 - **sleep:**                Pauses for a specified duration.
 - **timed_never_complete:** Creates an effect that runs indefinitely but has an enforced duration.
-- **with_duration:**        Wraps an effect and enforces a duration on it.
+- **with_duration:**        Wraps an effect and enforces a maximum duration on it.
 
 #### Geometry Effects
 - **translate:**     Moves the effect area by a specified amount.

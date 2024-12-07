@@ -1,6 +1,5 @@
 use ratatui::prelude::*;
 
-
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
 #[allow(dead_code)]
 pub enum Gruvbox {
@@ -44,7 +43,7 @@ pub enum Gruvbox {
 }
 
 impl Gruvbox {
-    const fn color(&self) -> Color {
+    pub const fn color(&self) -> Color {
         match self {
             Gruvbox::Dark0Hard    => Color::from_u32(0x1d2021),
             Gruvbox::Dark0        => Color::from_u32(0x282828),

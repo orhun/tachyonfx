@@ -11,7 +11,7 @@ readme = "README.md"
 keywords = ["ratatui", "terminal", "effects", "UI", "TUI"]
 categories = ["command-line-interface"]
 authors = ["Adrian Papari <junkdog@angelhill.net>"]
-exclude = ["images/*.gif", ".*"]
+exclude = ["images/*.gif", "docs/assets/*.gif", ".*"]
 
 [dependencies]
 bon = "3.1.0"
@@ -28,6 +28,10 @@ sendable = []
 
 [[example]]
 name = "minimal"
+
+[[example]]
+# for fx module docs
+name = "effect-showcase"
 
 [[example]]
 name = "open-window"

@@ -1,0 +1,50 @@
+#!/usr/bin/env zsh
+
+output="${1:-output.mp4}"
+
+function record() {
+    if [[ $geometry =~ ([0-9]+)x([0-9]+)[+]([0-9]+)[+]([0-9]+) ]]; then
+        local w=$match[1]
+        local h=$match[2]
+        local x=$match[3]
+        local y=$match[4]
+    fi
+
+    if [[ -z $w || -z $h || -z $x || -z $y ]]; then
+        echo "failed to parse geometry"
+        return 1
+    fi
+
+    # ensure width and height are divisible by 2
+    if (( w % 2 != 0 || h % 2 != 0 )); then
+        echo "Width ($w) and height ($h) must be divisible by 2 for yuv420p encoding"
+        return 1
+    fi
+
+    # ensure output file doesn't exist
+    if [[ -f $output ]]; then
+        echo "Warning: $output already exists"
+        read -q "REPLY?Overwrite? (y/n) "
+        echo
+        [[ $REPLY =~ ^[Yy]$ ]] && rm $output || return 1
+    fi
+
+    ffmpeg -f x11grab \
+        -video_size ${w}x${h} \
+        -framerate 30 \
+        -i :0.0+${x},${y} \
+        -c:v libx264 \
+        -preset medium \
+        -crf 23 \
+        -pix_fmt yuv420p \
+        $output
+}
+
+
+echo "select window to record"
+geometry=$(xwininfo \
+    | grep -e '-geometry' \
+    | sed --regexp-extended 's/.*geometry[[:space:]]+(.+)/\1/'
+)
+
+record

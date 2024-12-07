@@ -1,3 +1,73 @@
+//! ## Effect Reference
+//!
+//! ## Color Effects 🎨
+//! Color effects are used to modify or transition between colors, either for foreground text, background, or both. These are ideal for highlighting changes, drawing attention, or creating smooth visual transitions between states.
+//!
+//! | Effect              | Description | Example  |
+//! |---------------------|-------------|----------|
+//! | [`fade_from()`] ⟳     | Fades from specified colors            |![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/fade_from.gif) |
+//! | [`fade_from_fg()`] ⟳  | Fades from specified foreground color  | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/fade_from_fg.gif) |
+//! | [`fade_to()`] ⟳       | Fades to specified colors              | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/fade_to.gif) |
+//! | [`fade_to_fg()`] ⟳    | Fades to specified foreground color    | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/fade_to_fg.gif) |
+//! | [`hsl_shift()`] 🌈    | Changes hue, saturation, and lightness | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/hsl_shift.gif) |
+//! | [`hsl_shift_fg()`] 🌈 | Changes foreground HSL values          | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/hsl_shift_fg.gif) |
+//!
+//! ## Text/Character Effects ✍️
+//! Text effects modify the actual characters or their placement in the terminal. These are perfect for transitions, reveals, and dynamic text animations.
+//!
+//! | Effect              | Description | Example  |
+//! |---------------------|-------------|----------|
+//! | [`coalesce()`] ⬆️  | Reforms dissolved foreground | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/coalesce.gif) |
+//! | [`dissolve()`] ⬇️  | Dissolves foreground content | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/dissolve.gif) |
+//! | [`slide_in()`] ↔️  | Slides content with gradient | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/slide_in.gif) |
+//! | [`slide_out()`] ↔️ | Slides content with gradient | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/slide_out.gif) |
+//! | [`sweep_in()`] ↔️  | Sweeps content with color    | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/sweep_in.gif) |
+//! | [`sweep_out()`] ↔️ | Sweeps content with color    | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/sweep_out.gif) |
+//!
+//! ## Timing and Control Effects ⏱️
+//! Control effects modify how other effects behave over time. They're essential for creating complex animations and controlling the flow of multiple effects.
+//!
+//! | Effect              | Description | Example  |
+//! |---------------------|-------------|----------|
+//! | [`consume_tick()`] ⌛ | Consumes a single tick            | N/A |
+//! | [`delay()`] ⏳ | Delays effect by specified duration      | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/delay.gif)|
+//! | [`never_complete()`] ♾️ | Makes effect run indefinitely   | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/never_complete.gif) |
+//! | [`ping_pong()`] 🔄 | Plays effect forward then backward   | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/ping_pong.gif)|
+//! | [`prolong_start()`] ⏳ | Extends effect duration          | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/prolong_start.gif)|
+//! | [`prolong_end()`] ⏳ | Extends effect duration            | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/prolong_end.gif)|
+//! | [`repeat()`] 🔁 | Repeats effect by count or duration     | N/A |
+//! | [`repeating()`] 🔁 | Repeats an effect indefinitely       | N/A |
+//! | [`sleep()`] 💤 | Pauses for specified duration            | N/A |
+//! | [`with_duration()`] ⏱️ | Applies duration limit to effect | N/A |
+//!
+//!
+//! ## Geometry Effects 📐
+//! Geometry effects modify the position or size of content. These are useful for creating dynamic layouts and transitions.
+//!
+//! | Effect                 | Description | Example  |
+//! |------------------------|-------------|----------|
+//! | [`translate()`] ➡️     | Moves effect area     | N/A |
+//! | [`translate_buf()`] ➡️ | Moves buffer contents | N/A |
+//! | [`resize_area()`] ⬌   | Resizes effect area   | N/A |
+//!
+//! ## Combination Effects 🔗
+//! Combination effects allow multiple effects to be composed together. These are crucial for creating complex animations.
+//!
+//! | Effect              | Description | Example  |
+//! |---------------------|-------------|----------|
+//! | [`parallel()`] ⫽ | Runs effects simultaneously | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/parallel.gif) |
+//! | [`sequence()`] ⟶ | Runs effects sequentially   | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/sequence.gif) |
+//!
+//! ## Other Effects 🛠️
+//! Advanced effects for custom behaviors or quick one-off effects.
+//!
+//! | Effect & Description | Preview | Example |
+//! |---------------------|---------|----------|
+//! | [`effect_fn()`] 🔧        | Custom effects with cell iterator | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/effect_fn.gif) |
+//! | [`effect_fn_buf()`] 🔧    | Custom effects with buffer        | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/effect_fn_buf.gif) |
+//! | [`offscreen_buffer()`] 📺 | Renders to separate buffer        | N/A |
+//!
+
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Offset, Size};
 use ratatui::style::Color;
@@ -92,14 +162,17 @@ mod direction;
 /// cell to a new color over the specified duration. The effect is only applied to cells with
 /// a foreground color of `Color::DarkGray`.
 ///
+/// Example from `examples/effect-showcase.rs`
+///
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/effect_fn.gif)
+///
 /// ```no_run
 /// use std::time::Instant;
 /// use ratatui::style::Color;
 /// use tachyonfx::{fx, HslConvertable};
 ///
-/// fx::never_complete(fx::effect_fn(Instant::now(), 0, |state, _ctx, cell_iter| {
+/// fx::effect_fn(Instant::now(), 1000, |state, _ctx, cell_iter| {
 ///     let cycle: f32 = (state.elapsed().as_millis() % 3600) as f32;
-///
 ///     cell_iter
 ///         .filter(|(_, cell)| cell.symbol() != " ")
 ///         .enumerate()
@@ -107,8 +180,8 @@ mod direction;
 ///             let hue = (2.0 * i as f32 + cycle * 0.2) % 360.0;
 ///             let color = Color::from_hsl(hue, 100.0, 50.0);
 ///             cell.set_fg(color);
-///         });
-/// }));
+///     });
+/// })
 /// ```
 ///
 /// This example creates an effect that runs indefinitely and cycles the color of each
@@ -147,6 +220,37 @@ where
 ///
 /// # Returns
 /// * An `Effect` instance that can be used with other effects or applied directly to terminal cells.
+///
+/// # Examples
+///
+/// Example from `examples/effect-showcase.rs`
+///
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/effect_fn_buf.gif)
+///
+/// ```no_run
+/// use ratatui::style::Color;
+/// use tachyonfx::*;
+///
+/// let timer = EffectTimer::from_ms(1000, Interpolation::Linear);
+/// let no_state = (); // no state to keep track of
+///
+/// fx::effect_fn_buf(no_state, timer, |_state, context, buf| {
+///     let offset = context.timer.remaining().as_millis() as usize;
+///
+///     let cell_pred = context.filter.unwrap_or(CellFilter::All).selector(buf.area);
+///     for (i, pos) in buf.area.positions().enumerate() {
+///         let cell = &mut buf[pos];
+///         if !cell_pred.is_valid(pos, &cell) {
+///             continue;
+///         }
+///         cell.set_fg(Color::Indexed(((offset + i) % 256) as u8));
+///     }
+/// }).with_cell_selection(CellFilter::Text)
+/// ```
+///
+/// This example creates an effect that runs for 1s and cycles the color of the
+/// text based on the elapsed time. Each cell's color is slightly offset by
+/// the cell's position.
 pub fn effect_fn_buf<F, S, T>(state: S, timer: T, f: F) -> Effect
 where
     S: Clone + Send + 'static,
@@ -163,6 +267,22 @@ where
 }
 
 /// changes the hue, saturation, and lightness of the foreground and background colors.
+///
+/// # Examples
+///
+/// Example from `examples/effect-showcase.rs`
+///
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/hsl_shift.gif)
+///
+/// ```no_run
+/// // shift the hue of the entire area
+/// use tachyonfx::{fx, Interpolation};
+///
+/// let timer = (1000, Interpolation::Linear);
+/// let fg_shift = [120.0, 25.0, 25.0];
+/// let bg_shift = [-40.0, -50.0, -50.0];
+/// fx::hsl_shift(Some(fg_shift), Some(bg_shift), timer)
+/// ```
 pub fn hsl_shift<T: Into<EffectTimer>>(
     hsl_fg_change: Option<[f32; 3]>,
     hsl_bg_change: Option<[f32; 3]>,
@@ -182,6 +302,21 @@ pub fn hsl_shift<T: Into<EffectTimer>>(
 
 /// Shifts the foreground color by the specified hue, saturation, and lightness
 /// over the specified duration.
+///
+/// # Examples
+///
+/// Example from `examples/effect-showcase.rs`
+///
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/hsl_shift_fg.gif)
+///
+/// ```no_run
+/// use tachyonfx::{fx, Interpolation};
+///
+/// // shift the hue of the entire area
+/// let timer = (1000, Interpolation::Linear);
+/// let fg_shift = [120.0, 25.0, 25.0];
+/// fx::hsl_shift(Some(fg_shift), None, timer)
+/// ```
 pub fn hsl_shift_fg<T: Into<EffectTimer>>(
     hsl_fg_change: [f32; 3],
     timer: T,
@@ -206,7 +341,7 @@ pub fn ping_pong(effect: Effect) -> Effect {
 
 /// Repeat the effect indefinitely.
 pub fn repeating(effect: Effect) -> Effect {
-    repeat(effect, repeat::RepeatMode::Forever)
+    repeat(effect, RepeatMode::Forever)
 }
 
 /// Creates an effect that sweeps out from a specified color with optional randomness.
@@ -252,6 +387,17 @@ pub fn sweep_out<T: Into<EffectTimer>, C: Into<Color>>(
 /// Returns a sweep `Effect`.
 ///
 /// # Examples
+///
+/// Example from `examples/effect-showcase.rs`
+///
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/sweep_in.gif)
+///
+/// ```no_compile
+/// // sweep in from the left with a gradient length of 10 and no randomness
+/// let c = Theme::oob_color();
+/// let timer = (1000, Interpolation::Linear);
+/// fx::sweep_in(Direction::LeftToRight, 10, 0, c, timer)
+/// ```
 ///
 /// Basic usage:
 /// ```
@@ -319,17 +465,16 @@ pub fn sweep_in<T: Into<EffectTimer>, C: Into<Color>>(
 ///
 /// # Examples
 ///
-/// ```no_run
-/// use ratatui::style::Color;
-/// use tachyonfx::*;
-/// use tachyonfx::fx::Direction;
+/// Example from `examples/effect-showcase.rs`
 ///
-/// let timer = EffectTimer::from_ms(2000, Interpolation::Linear);
-/// let slide_effect = fx::slide_in(Direction::LeftToRight, 10, 0, Color::Black, timer);
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/slide_in.gif)
+///
+/// ```no_compile
+/// // slide in from the top, with some randomness
+/// let c = Theme::oob_color();
+/// let timer = (1000, Interpolation::Linear);
+/// fx::slide_in(Direction::UpToDown, 10, 0, c, timer)
 /// ```
-///
-/// This example creates a sliding effect that moves cells in from the left to the right
-/// with a gradient length of 10 and a black background color over two seconds.
 pub fn slide_in<T: Into<EffectTimer>, C: Into<Color>>(
     direction: Direction,
     gradient_length: u16,
@@ -358,17 +503,16 @@ pub fn slide_in<T: Into<EffectTimer>, C: Into<Color>>(
 ///
 /// # Examples
 ///
-/// ```no_run
-/// use ratatui::style::Color;
-/// use tachyonfx::*;
-/// use tachyonfx::fx::Direction;
+/// Example from `examples/effect-showcase.rs`
 ///
-/// let timer = EffectTimer::from_ms(2000, Interpolation::CubicInOut);
-/// let slide_effect = fx::slide_out(Direction::UpToDown, 10, 0, Color::Black, timer);
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/slide_out.gif)
+///
+/// ```no_compile
+/// // slide in from the top, with no randomness
+/// let c = Theme::oob_color();
+/// let timer = (1000, Interpolation::Linear);
+/// fx::slide_in(Direction::UpToDown, 10, 0, c, timer)
 /// ```
-///
-/// This example creates a sliding effect that moves cells out from the top to the bottom
-/// with a gradient length of 10 and a black background color over two seconds.
 pub fn slide_out<T: Into<EffectTimer>, C: Into<Color>>(
     direction: Direction,
     gradient_length: u16,
@@ -544,12 +688,44 @@ pub fn offscreen_buffer(fx: Effect, render_target: RefCount<Buffer>) -> Effect {
 
 /// Runs the effects in sequence, one after the other. Reports completion
 /// once the last effect has completed.
+///
+/// # Examples
+///
+/// Example from `examples/effect-showcase.rs`
+///
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/sequence.gif)
+///
+/// ```no_compile
+/// // fade in the entire area from the out-of-bounds color
+/// let c = Theme::quote().bg.unwrap();
+/// let timer = (500, Interpolation::CircOut);
+/// sequence(&[
+///     fx::fade_from_fg(c, timer),
+///     fx::dissolve(timer),
+/// ])
+/// ```
 pub fn sequence(effects: &[Effect]) -> Effect {
     SequentialEffect::new(effects.into()).into_effect()
 }
 
 /// Runs the effects in parallel, all at the same time. Reports completion
 /// once all effects have completed.
+///
+/// # Examples
+///
+/// Example from `examples/effect-showcase.rs`
+///
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/parallel.gif)
+///
+/// ```no_compile
+/// // fade in the entire area from the out-of-bounds color
+/// let c = Theme::quote().bg.unwrap();
+/// let timer = (1000, Interpolation::CircOut);
+/// parallel(&[
+///     fx::fade_from_fg(c, timer),
+///     fx::coalesce(timer),
+/// ])
+/// ```
 pub fn parallel(effects: &[Effect]) -> Effect {
     ParallelEffect::new(effects.into()).into_effect()
 }
@@ -557,12 +733,36 @@ pub fn parallel(effects: &[Effect]) -> Effect {
 /// Dissolves the current text into the new text over the specified duration. The
 /// `cycle_len` parameter specifies the number of cell states are tracked before
 /// it cycles and repeats.
+///
+/// # Examples
+///
+/// Example from `examples/effect-showcase.rs`
+///
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/dissolve.gif)
+///
+/// ```no_run
+/// use tachyonfx::{fx, Interpolation};
+///
+/// fx::dissolve(1000) // linear interpolation
+/// ```
 pub fn dissolve<T: Into<EffectTimer>>(timer: T) -> Effect {
     Dissolve::new(timer.into())
         .into_effect()
 }
 
 /// The reverse of [dissolve()].
+///
+/// # Examples
+///
+/// Example from `examples/effect-showcase.rs`
+///
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/coalesce.gif)
+///
+/// ```no_run
+/// use tachyonfx::{fx, Interpolation};
+///
+/// fx::coalesce((1000, Interpolation::BounceOut))
+/// ```
 pub fn coalesce<T: Into<EffectTimer>>(timer: T) -> Effect {
     Dissolve::new(timer.into().reversed())
         .into_effect()
@@ -570,6 +770,20 @@ pub fn coalesce<T: Into<EffectTimer>>(timer: T) -> Effect {
 
 
 /// Fades the foreground color to the specified color over the specified duration.
+///
+/// # Examples
+///
+/// Example from `examples/effect-showcase.rs`
+///
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/fade_to_fg.gif)
+///
+/// ```no_compile
+/// // fade out blake by targeting the author fg color
+/// let c = Theme::quote().bg.expect("bg color to exist");
+/// let filter = CellFilter::FgColor(Theme::author().fg.unwrap());
+/// fx::fade_to_fg(c, (1000, Interpolation::CircOut))
+///     .with_cell_selection(filter)
+/// ```
 pub fn fade_to_fg<T: Into<EffectTimer>, C: Into<Color>>(
     fg: C,
     timer: T,
@@ -578,6 +792,20 @@ pub fn fade_to_fg<T: Into<EffectTimer>, C: Into<Color>>(
 }
 
 /// Fades the foreground color from the specified color over the specified duration.
+///
+/// # Examples
+///
+/// Example from `examples/effect-showcase.rs`
+///
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/fade_from_fg.gif)
+///
+/// ```no_compile
+/// // fade in content, excluding borders, from the bg color
+/// let c = Theme::quote().bg.expect("bg color to exist");
+/// let filter = CellFilter::Inner(Margin::new(1, 1));
+/// fx::fade_from_fg(c, (1000, Interpolation::QuadInOut))
+///     .with_cell_selection(filter)
+/// ```
 pub fn fade_from_fg<T: Into<EffectTimer>, C: Into<Color>>(
     fg: C,
     timer: T,
@@ -586,6 +814,19 @@ pub fn fade_from_fg<T: Into<EffectTimer>, C: Into<Color>>(
 }
 
 /// Fades to the specified the background and foreground colors over the specified duration.
+///
+/// ## Example
+///
+/// Example from `examples/effect-showcase.rs`
+///
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/fade_to.gif)
+///
+/// ```no_compile
+/// // fade the entire area to the out-of-bounds color
+/// let c = Theme::oob_color();
+/// fx::fade_to(c, c, (1000, Interpolation::CircOut))
+/// ```
+///
 pub fn fade_to<T: Into<EffectTimer>, C: Into<Color>>(
     fg: C,
     bg: C,
@@ -595,6 +836,18 @@ pub fn fade_to<T: Into<EffectTimer>, C: Into<Color>>(
 }
 
 /// Fades from the specified the background and foreground colors over the specified duration.
+///
+/// # Examples
+///
+/// Example from `examples/effect-showcase.rs`
+///
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/fade_from.gif)
+///
+/// ```no_compile
+/// // fade in the entire area from the out-of-bounds color
+/// let c = Theme::oob_color();
+/// fx::fade_from(c, c, (1000, Interpolation::CircOut))
+/// ```
 pub fn fade_from<T: Into<EffectTimer>, C: Into<Color>>(
     fg: C,
     bg: C,
@@ -637,14 +890,17 @@ pub fn sleep<T: Into<EffectTimer>>(duration: T) -> Effect {
 /// An `Effect` that, when processed, will first pause for the specified duration
 /// and then apply the provided effect.
 ///
-/// # Examples
+/// # Example
 ///
-/// ```
-/// use tachyonfx::{fx, Duration, Effect, EffectTimer};
-/// use ratatui::style::Color;
+/// Example from `examples/effect-showcase.rs`
 ///
-/// let fade_effect = fx::fade_to_fg(Color::Red, Duration::from_secs(1));
-/// let delayed_fade: Effect = fx::delay(Duration::from_secs(2), fade_effect);
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/delay.gif)
+///
+/// ```no_run
+/// use tachyonfx::fx;
+///
+/// // wait 800ms before dissolving the content
+/// fx::delay(800, fx::dissolve(200))
 /// ```
 pub fn delay<T: Into<EffectTimer>>(duration: T, effect: Effect) -> Effect {
     sequence(&[sleep(duration), effect])
@@ -667,6 +923,17 @@ pub fn delay<T: Into<EffectTimer>>(duration: T, effect: Effect) -> Effect {
 /// A new `Effect` that includes the additional duration at the start.
 ///
 /// # Examples
+///
+/// Example from `examples/effect-showcase.rs`
+///
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/prolong_start.gif)
+///
+/// ```no_compile
+/// let c = Theme::quote().bg.unwrap();
+/// let timer = (500, Interpolation::CircOut);
+/// fx::prolong_start(timer, fx::fade_from_fg(c, timer))
+/// ```
+///  This example holds the initial state of the fade effect for 500ms before starting the fade.
 ///
 /// ```
 /// use std::time::Duration;
@@ -700,6 +967,17 @@ pub fn prolong_start<T: Into<EffectTimer>>(duration: T, effect: Effect) -> Effec
 /// A new `Effect` that includes the additional duration at the end.
 ///
 /// # Examples
+///
+/// Example from `examples/effect-showcase.rs`
+///
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/prolong_start.gif)
+///
+/// ```no_compile
+/// let c = Theme::quote().bg.unwrap();
+/// let timer = (500, Interpolation::CircOut);
+/// fx::prolong_end(timer, fx::fade_to_fg(c, timer))
+/// ```
+/// This example holds the final state of the fade effect for another 500ms after it completes.
 ///
 /// ```
 /// use std::time::Duration;
@@ -738,8 +1016,8 @@ pub fn never_complete(effect: Effect) -> Effect {
     NeverComplete::new(effect).into_effect()
 }
 
-/// Wraps an effect and enforces a duration on it. Once the duration has
-/// elapsed, the effect will be marked as complete.
+/// Wraps an effect and enforces a maximum duration on it. Once the duration has
+/// elapsed or the wrapped effect has finished, the effect will be marked as complete.
 pub fn with_duration(duration: Duration, effect: Effect) -> Effect {
     effect.with_duration(duration)
 }

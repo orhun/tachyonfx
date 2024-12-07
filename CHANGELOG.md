@@ -1,4 +1,8 @@
 # Changelog
+### Fixed
+- `fx::with_duration`: clarified misleading documentation.
+
+
 ## tachyonfx 0.9.3 - 2024-11-20
 ### Fixed
 - sweep and slide effects now honor applied CellFilters.

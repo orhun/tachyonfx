@@ -337,16 +337,70 @@ pub fn term256_colors() -> Effect {
 }
 
 /// Repeat the effect indefinitely or for a specified number of times or duration.
+///
+/// # Arguments
+/// * `effect` - The effect to repeat
+/// * `mode` - Controls how the effect repeats:
+///   - `RepeatMode::Forever` - Repeats indefinitely
+///   - `RepeatMode::Times(n)` - Repeats n times
+///   - `RepeatMode::Duration(d)` - Repeats for duration d
+///
+/// # Examples
+/// ```no_run
+/// use tachyonfx::{fx, fx::RepeatMode, Duration, EffectTimer, Interpolation};
+/// use ratatui::style::Color;
+///
+/// // Repeat a fade effect 3 times
+/// let fade = fx::fade_to_fg(Color::Red, EffectTimer::from_ms(1000, Interpolation::Linear));
+/// let repeated = fx::repeat(fade, RepeatMode::Times(3));
+///
+/// // Repeat an effect for 5 seconds
+/// let fade = fx::fade_to_fg(Color::Red, EffectTimer::from_ms(1000, Interpolation::Linear));
+/// let repeat_duration = fx::repeat(fade, RepeatMode::Duration(Duration::from_secs(5)));
+/// ```
 pub fn repeat(effect: Effect, mode: RepeatMode) -> Effect {
     Repeat::new(effect, mode).into_effect()
 }
 
-/// plays the effect forwards and then backwards.
+/// Plays the effect forwards and then backwards, creating a ping-pong animation effect.
+///
+/// This is useful for creating oscillating animations where an effect needs to smoothly
+/// reverse back to its starting state. The total duration will be twice the original
+/// effect's duration.
+///
+/// # Arguments
+/// * `effect` - The effect to play forwards and backwards
+///
+/// # Examples
+/// ```
+/// use tachyonfx::{fx, EffectTimer, Interpolation};
+/// use ratatui::style::Color;
+///
+/// // Fade to red and back over 2 seconds total
+/// let timer = EffectTimer::from_ms(1000, Interpolation::Linear);
+/// let fade = fx::fade_to_fg(Color::from_u32(0xff4010), timer);
+/// let ping_pong = fx::ping_pong(fade);
+/// ```
 pub fn ping_pong(effect: Effect) -> Effect {
     PingPong::new(effect).into_effect()
 }
 
 /// Repeat the effect indefinitely.
+///
+/// This is a convenience wrapper around `repeat(effect, RepeatMode::Forever)`.
+///
+/// # Arguments
+/// * `effect` - The effect to repeat indefinitely
+///
+/// # Examples
+/// ```no_run
+/// use tachyonfx::{fx, EffectTimer, Interpolation};
+/// use ratatui::style::Color;
+///
+/// // Create an endless color cycling effect
+/// let fade = fx::fade_to_fg(Color::Red, EffectTimer::from_ms(1000, Interpolation::Linear));
+/// let endless = fx::repeating(fade);
+/// ```
 pub fn repeating(effect: Effect) -> Effect {
     repeat(effect, RepeatMode::Forever)
 }
@@ -1032,8 +1086,31 @@ pub fn consume_tick() -> Effect {
 }
 
 /// An effect that forces the wrapped effect to never report completion,
-/// effectively making it run indefinitely. Once the effect reaches the end,
-/// it will continue to process the effect without advancing the duration.
+/// effectively making it run indefinitely.
+///
+/// Once the wrapped effect reaches its end state, it will:
+/// - Continue processing without advancing its internal timer
+/// - Maintain its final visual state
+/// - Never report completion
+/// - Continue consuming processing ticks
+///
+/// This is useful for:
+/// - Creating persistent visual states
+/// - Preventing effect chains from advancing
+/// - Maintaining effects that need to run indefinitely
+///
+/// # Arguments
+/// * `effect` - The effect to run indefinitely
+///
+/// # Examples
+/// ```no_run
+/// use tachyonfx::{fx, EffectTimer, Interpolation};
+/// use ratatui::style::Color;
+///
+/// // Create a permanent color change over 1 second
+/// let fade = fx::fade_to_fg(Color::Red, EffectTimer::from_ms(1000, Interpolation::Linear));
+/// let permanent = fx::never_complete(fade);
+/// ```
 pub fn never_complete(effect: Effect) -> Effect {
     NeverComplete::new(effect).into_effect()
 }

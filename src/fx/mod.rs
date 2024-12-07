@@ -1,4 +1,9 @@
-//! ## Effect Reference
+//! Effects in tachyonfx operate on terminal cells after widgets have been rendered to the screen.
+//! When an effect is applied, it modifies properties of the already-rendered cells - like their
+//! colors, characters, or visibility. This means that the typical flow is:
+//!
+//! 1. Render your widget to the screen
+//! 2. Apply effects to transform the rendered content
 //!
 //! ## Color Effects 🎨
 //! Color effects are used to modify or transition between colors, either for foreground text, background, or both. These are ideal for highlighting changes, drawing attention, or creating smooth visual transitions between states.
@@ -67,6 +72,7 @@
 //! | [`effect_fn_buf()`] 🔧    | Custom effects with buffer        | ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/effect_fn_buf.gif) |
 //! | [`offscreen_buffer()`] 📺 | Renders to separate buffer        | N/A |
 //!
+//! Additional effects can be created by implementing the [Shader](crate::Shader) trait.
 
 use std::fmt::Debug;
 use ratatui::buffer::Buffer;

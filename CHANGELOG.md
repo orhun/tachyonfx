@@ -4,6 +4,11 @@
 
 
 ## tachyonfx 0.9.3 - 2024-11-20
+
+### Breaking Changes
+- The `Shader` trait now requires the `Debug` trait to be implemented. This means that any
+  user-defined effects must also implement `Debug`. 
+
 ### Fixed
 - sweep and slide effects now honor applied CellFilters.
 

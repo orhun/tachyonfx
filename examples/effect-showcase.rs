@@ -144,7 +144,6 @@ mod examples {
     }
 
     pub fn ping_pong() -> Effect {
-        // fade in the entire area from the out-of-bounds color
         let timer = (500, Interpolation::CircOut);
         fx::ping_pong(fx::coalesce(timer))
     }

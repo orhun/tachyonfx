@@ -374,14 +374,15 @@ pub fn repeat(effect: Effect, mode: RepeatMode) -> Effect {
 /// * `effect` - The effect to play forwards and backwards
 ///
 /// # Examples
-/// ```
-/// use tachyonfx::{fx, EffectTimer, Interpolation};
-/// use ratatui::style::Color;
+/// Example from `examples/effect-showcase.rs`
 ///
-/// // Fade to red and back over 2 seconds total
-/// let timer = EffectTimer::from_ms(1000, Interpolation::Linear);
-/// let fade = fx::fade_to_fg(Color::from_u32(0xff4010), timer);
-/// let ping_pong = fx::ping_pong(fade);
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/ping_pong.gif)
+///
+/// ```no_run
+/// use tachyonfx::{fx, Interpolation};
+///
+/// let timer = (500, Interpolation::CircOut);
+/// fx::ping_pong(fx::coalesce(timer));
 /// ```
 pub fn ping_pong(effect: Effect) -> Effect {
     PingPong::new(effect).into_effect()

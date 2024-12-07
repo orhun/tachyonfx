@@ -1,5 +1,6 @@
 # Changelog
 
+## tachyonfx 0.10.0 - 2024-12-07
 ### Added
 - `fx::dissolve_to()`: dissolves both the characters and style over the specified duration.
 - `fx::coallesce_from()`: reforms both the characters and style over the specified duration.

@@ -15,7 +15,7 @@ transformations, animations, and complex effect combinations.
 Add tachyonfx to your `Cargo.toml`:
 
 ```toml
-tachyonfx = "0.9.3"
+tachyonfx = "0.10.0"
 ```
 
 ## Core Concepts

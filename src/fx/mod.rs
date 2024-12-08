@@ -522,10 +522,6 @@ pub fn sweep_in<T: Into<EffectTimer>, C: Into<Color>>(
 /// # Returns
 /// * An `Effect` instance that applies the sliding-in effect.
 ///
-/// # Usage Notes
-/// This effect should be applied before rendering any affected `ratatui` widgets. Other effects,
-/// such as `fx::dissolve` or `fx::fade_to_fg`, are applied after rendering. You can manually retrieve
-/// the currently recalculated draw area using the `area()` function of the effect.
 ///
 /// # Examples
 ///
@@ -541,7 +537,7 @@ pub fn sweep_in<T: Into<EffectTimer>, C: Into<Color>>(
 /// let timer = (1000, Interpolation::Linear);
 /// fx::slide_in(Motion::UpToDown, 10, 0, c, timer);
 /// ```
-/// Slides in from the top, with some randomness
+/// Slides in from the top, with no randomness
 pub fn slide_in<T: Into<EffectTimer>, C: Into<Color>>(
     direction: Motion,
     gradient_length: u16,
@@ -864,6 +860,21 @@ pub fn coalesce<T: Into<EffectTimer>>(timer: T) -> Effect {
 /// # Arguments
 /// * `timer` - Controls the duration and interpolation of the effect
 /// * `style` - The target style to dissolve to
+///
+/// /// # Examples
+///
+/// Example from `examples/effect-showcase.rs`
+///
+/// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/coalesce_from.gif)
+///
+/// ```no_run
+/// use ratatui::prelude::{Color, Style};
+/// use tachyonfx::*;
+///
+/// let c = Color::from_u32(0x1d2021);
+/// let style = Style::default().bg(c);
+/// fx::coalesce_from(style, (1000, Interpolation::ExpoInOut));
+/// ```
 pub fn coalesce_from<T: Into<EffectTimer>>(style: Style, timer: T) -> Effect {
     Dissolve::with_style(style, timer.into().reversed())
         .into_effect()

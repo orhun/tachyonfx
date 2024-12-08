@@ -76,7 +76,6 @@
 //!
 //! Additional effects can be created by implementing the [Shader](crate::Shader) trait.
 
-use std::fmt::Debug;
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Offset, Size};
 use ratatui::style::{Color, Style};
@@ -199,7 +198,7 @@ mod direction;
 ///
 pub fn effect_fn<F, S, T>(state: S, timer: T, f: F) -> Effect
 where
-    S: Clone + ThreadSafetyMarker + Debug + 'static,
+    S: Clone + ThreadSafetyMarker + 'static,
     T: Into<EffectTimer>,
     F: FnMut(&mut S, ShaderFnContext, CellIterator) + ThreadSafetyMarker + 'static,
 {
@@ -262,7 +261,7 @@ where
 /// the cell's position.
 pub fn effect_fn_buf<F, S, T>(state: S, timer: T, f: F) -> Effect
 where
-    S: Clone + ThreadSafetyMarker + Debug + 'static,
+    S: Clone + ThreadSafetyMarker + 'static,
     T: Into<EffectTimer>,
     F: FnMut(&mut S, ShaderFnContext, &mut Buffer) + ThreadSafetyMarker + 'static,
 {

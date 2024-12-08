@@ -8,7 +8,7 @@ use crate::{ref_count, CellFilter, CellIterator, Duration, EffectTimer, RefCount
 use crate::fx::invoke_fn;
 use crate::ThreadSafetyMarker;
 
-#[derive(Builder, Clone, Debug)]
+#[derive(Builder, Clone)]
 pub struct ShaderFn<S: Clone> {
     state: S,
     original_state: Option<S>,
@@ -131,7 +131,7 @@ impl<S: Clone + ThreadSafetyMarker + 'static> ShaderFn<S> {
 }
 
 
-impl<S: Clone + ThreadSafetyMarker + Debug + 'static> Shader for ShaderFn<S> {
+impl<S: Clone + ThreadSafetyMarker + 'static> Shader for ShaderFn<S> {
     fn name(&self) -> &'static str {
         self.name
     }
@@ -195,5 +195,17 @@ impl<S> Debug for ShaderFnSignature<S> {
             ShaderFnSignature::Iter(_) => write!(f, "Iter(<function>)"),
             ShaderFnSignature::Buffer(_) => write!(f, "Buffer(<function>)"),
         }
+    }
+}
+
+impl<S: Clone> Debug for ShaderFn<S> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("ShaderFn")
+            .field("name", &self.name)
+            .field("code", &self.code)
+            .field("timer", &self.timer)
+            .field("cell_filter", &self.cell_filter)
+            .field("area", &self.area)
+            .finish()
     }
 }

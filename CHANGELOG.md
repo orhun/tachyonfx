@@ -1,7 +1,21 @@
 # Changelog
 
+## tachyonfx 0.10.1 - 2024-12-08
+
+### Documentation
+- Improved code examples with complete imports and explicit color values instead of theme references
+- Updated motion-related documentation to use `Motion` enum instead of `Direction`
+
+### Fixed
+- `fx::effect_fn`/`fx::effect_fn_buf`: removed `Debug` requirement for state parameter.
+
+### Breaking Changes introduced in 0.10.0
+- Added `Debug` requirement to `Shader` trait - any custom shaders must now implement `Debug`
+
+
 ## tachyonfx 0.10.0 - 2024-12-07
 ### Added
+- Implemented `Debug` for all effect types and supporting structs
 - `fx::dissolve_to()`: dissolves both the characters and style over the specified duration.
 - `fx::coallesce_from()`: reforms both the characters and style over the specified duration.
 - Example gifs and better rustdoc for the [fx](https://docs.rs/tachyonfx/latest/tachyonfx/fx/index.html) module.

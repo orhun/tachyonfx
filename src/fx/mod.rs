@@ -460,7 +460,7 @@ pub fn sweep_out<T: Into<EffectTimer>, C: Into<Color>>(
 /// use tachyonfx::*;
 /// let c = Color::from_u32(0x1d2021);
 /// let timer = (1000, Interpolation::Linear);
-/// fx::sweep_in(Motion::LeftToRight, 10, 0, c, timer)
+/// fx::sweep_in(Motion::LeftToRight, 10, 0, c, timer);
 /// ```
 ///
 /// Sweep in from the left with a gradient length of 10 and no randomness.
@@ -539,7 +539,7 @@ pub fn sweep_in<T: Into<EffectTimer>, C: Into<Color>>(
 ///
 /// let c = Color::from_u32(0x1d2021);
 /// let timer = (1000, Interpolation::Linear);
-/// fx::slide_in(Motion::UpToDown, 10, 0, c, timer)
+/// fx::slide_in(Motion::UpToDown, 10, 0, c, timer);
 /// ```
 /// Slides in from the top, with some randomness
 pub fn slide_in<T: Into<EffectTimer>, C: Into<Color>>(
@@ -581,7 +581,7 @@ pub fn slide_in<T: Into<EffectTimer>, C: Into<Color>>(
 /// // slide in from the top, with no randomness
 /// let c = Color::from_u32(0x1d2021);
 /// let timer = (1000, Interpolation::Linear);
-/// fx::slide_in(Motion::UpToDown, 10, 0, c, timer)
+/// fx::slide_in(Motion::UpToDown, 10, 0, c, timer);
 /// ```
 pub fn slide_out<T: Into<EffectTimer>, C: Into<Color>>(
     direction: Motion,
@@ -775,7 +775,7 @@ pub fn offscreen_buffer(fx: Effect, render_target: RefCount<Buffer>) -> Effect {
 /// fx::sequence(&[
 ///     fx::fade_from_fg(c, timer),
 ///     fx::dissolve(timer),
-/// ])
+/// ]);
 /// ```
 pub fn sequence(effects: &[Effect]) -> Effect {
     SequentialEffect::new(effects.into()).into_effect()
@@ -799,7 +799,7 @@ pub fn sequence(effects: &[Effect]) -> Effect {
 /// fx::parallel(&[
 ///     fx::fade_from_fg(c, timer),
 ///     fx::coalesce(timer),
-/// ])
+/// ]);
 /// ```
 /// Fade in the entire area from the out-of-bounds color.
 pub fn parallel(effects: &[Effect]) -> Effect {
@@ -884,7 +884,7 @@ pub fn coalesce_from<T: Into<EffectTimer>>(style: Style, timer: T) -> Effect {
 /// let c = Color::from_u32(0x504945);
 /// let filter = CellFilter::FgColor(Color::from_u32(0xfabd2f));
 /// fx::fade_to_fg(c, (1000, Interpolation::CircOut))
-///     .with_cell_selection(filter)
+///     .with_cell_selection(filter);
 /// ```
 ///
 /// Fade out blake by targeting the author fg color.
@@ -910,7 +910,7 @@ pub fn fade_to_fg<T: Into<EffectTimer>, C: Into<Color>>(
 /// let c = Color::from_u32(0x504945);
 /// let filter = CellFilter::Inner(Margin::new(1, 1));
 /// fx::fade_from_fg(c, (1000, Interpolation::QuadInOut))
-///     .with_cell_selection(filter)
+///     .with_cell_selection(filter);
 /// ```
 /// Fade in content, excluding borders, from the bg color.
 pub fn fade_from_fg<T: Into<EffectTimer>, C: Into<Color>>(
@@ -933,7 +933,7 @@ pub fn fade_from_fg<T: Into<EffectTimer>, C: Into<Color>>(
 /// use tachyonfx::*;
 ///
 /// let c = Color::from_u32(0x1d2021);
-/// fx::fade_to(c, c, (1000, Interpolation::CircOut))
+/// fx::fade_to(c, c, (1000, Interpolation::CircOut));
 /// ```
 ///
 /// Fade the entire area to the out-of-bounds color.
@@ -957,7 +957,7 @@ pub fn fade_to<T: Into<EffectTimer>, C: Into<Color>>(
 /// use ratatui::prelude::Color;
 /// use tachyonfx::*;
 /// let c = Color::from_u32(0x1d2021);
-/// fx::fade_from(c, c, (1000, Interpolation::CircOut))
+/// fx::fade_from(c, c, (1000, Interpolation::CircOut));
 /// ```
 ///
 /// fade in the entire area from the out-of-bounds color
@@ -1047,7 +1047,7 @@ pub fn delay<T: Into<EffectTimer>>(duration: T, effect: Effect) -> Effect {
 ///
 /// let c = Color::from_u32(0x504945);
 /// let timer = (500, Interpolation::CircOut);
-/// fx::prolong_start(timer, fx::fade_from_fg(c, timer))
+/// fx::prolong_start(timer, fx::fade_from_fg(c, timer));
 /// ```
 ///  This example holds the initial state of the fade effect for 500ms before starting the fade.
 ///
@@ -1093,7 +1093,7 @@ pub fn prolong_start<T: Into<EffectTimer>>(duration: T, effect: Effect) -> Effec
 ///
 /// let c = Color::from_u32(0x504945);
 /// let timer = (500, Interpolation::CircOut);
-/// fx::prolong_end(timer, fx::fade_to_fg(c, timer))
+/// fx::prolong_end(timer, fx::fade_to_fg(c, timer));
 /// ```
 /// This example holds the final state of the fade effect for another 500ms after it completes.
 ///

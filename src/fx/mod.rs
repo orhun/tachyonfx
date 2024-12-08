@@ -431,10 +431,10 @@ pub fn sweep_out<T: Into<EffectTimer>, C: Into<Color>>(
 /// # Arguments
 ///
 /// * `direction` - The direction of the sweep effect. Can be one of:
-///   - `Direction::LeftToRight`
-///   - `Direction::RightToLeft`
-///   - `Direction::UpToDown`
-///   - `Direction::DownToUp`
+///   - `Motion::LeftToRight`
+///   - `Motion::RightToLeft`
+///   - `Motion::UpToDown`
+///   - `Motion::DownToUp`
 ///
 /// * `gradient_length` - The length of the gradient transition in cells. This determines
 ///   how smooth the transition is between the faded color and the original content.
@@ -456,12 +456,15 @@ pub fn sweep_out<T: Into<EffectTimer>, C: Into<Color>>(
 ///
 /// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/sweep_in.gif)
 ///
-/// ```no_compile
-/// // sweep in from the left with a gradient length of 10 and no randomness
-/// let c = Theme::oob_color();
+/// ```no_run
+/// use ratatui::prelude::Color;
+/// use tachyonfx::*;
+/// let c = Color::from_u32(0x1d2021);
 /// let timer = (1000, Interpolation::Linear);
-/// fx::sweep_in(Direction::LeftToRight, 10, 0, c, timer)
+/// fx::sweep_in(Motion::LeftToRight, 10, 0, c, timer)
 /// ```
+///
+/// Sweep in from the left with a gradient length of 10 and no randomness.
 ///
 /// Basic usage:
 /// ```
@@ -531,12 +534,15 @@ pub fn sweep_in<T: Into<EffectTimer>, C: Into<Color>>(
 ///
 /// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/slide_in.gif)
 ///
-/// ```no_compile
-/// // slide in from the top, with some randomness
-/// let c = Theme::oob_color();
+/// ```no_run
+/// use ratatui::prelude::Color;
+/// use tachyonfx::*;
+///
+/// let c = Color::from_u32(0x1d2021);
 /// let timer = (1000, Interpolation::Linear);
-/// fx::slide_in(Direction::UpToDown, 10, 0, c, timer)
+/// fx::slide_in(Motion::UpToDown, 10, 0, c, timer)
 /// ```
+/// Slides in from the top, with some randomness
 pub fn slide_in<T: Into<EffectTimer>, C: Into<Color>>(
     direction: Motion,
     gradient_length: u16,
@@ -569,11 +575,14 @@ pub fn slide_in<T: Into<EffectTimer>, C: Into<Color>>(
 ///
 /// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/slide_out.gif)
 ///
-/// ```no_compile
+/// ```no_run
+/// use ratatui::prelude::Color;
+/// use tachyonfx::*;
+///
 /// // slide in from the top, with no randomness
-/// let c = Theme::oob_color();
+/// let c = Color::from_u32(0x1d2021);
 /// let timer = (1000, Interpolation::Linear);
-/// fx::slide_in(Direction::UpToDown, 10, 0, c, timer)
+/// fx::slide_in(Motion::UpToDown, 10, 0, c, timer)
 /// ```
 pub fn slide_out<T: Into<EffectTimer>, C: Into<Color>>(
     direction: Motion,
@@ -757,11 +766,14 @@ pub fn offscreen_buffer(fx: Effect, render_target: RefCount<Buffer>) -> Effect {
 ///
 /// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/sequence.gif)
 ///
-/// ```no_compile
+/// ```no_run
+/// use ratatui::prelude::Color;
+/// use tachyonfx::*;
+///
 /// // fade in the entire area from the out-of-bounds color
-/// let c = Theme::quote().bg.unwrap();
+/// let c = Color::from_u32(0x504945);
 /// let timer = (500, Interpolation::CircOut);
-/// sequence(&[
+/// fx::sequence(&[
 ///     fx::fade_from_fg(c, timer),
 ///     fx::dissolve(timer),
 /// ])
@@ -779,15 +791,18 @@ pub fn sequence(effects: &[Effect]) -> Effect {
 ///
 /// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/parallel.gif)
 ///
-/// ```no_compile
-/// // fade in the entire area from the out-of-bounds color
-/// let c = Theme::quote().bg.unwrap();
+/// ```no_run
+/// use ratatui::prelude::Color;
+/// use tachyonfx::*;
+/// 
+/// let c = Color::from_u32(0x504945);
 /// let timer = (1000, Interpolation::CircOut);
-/// parallel(&[
+/// fx::parallel(&[
 ///     fx::fade_from_fg(c, timer),
 ///     fx::coalesce(timer),
 /// ])
 /// ```
+/// Fade in the entire area from the out-of-bounds color.
 pub fn parallel(effects: &[Effect]) -> Effect {
     ParallelEffect::new(effects.into()).into_effect()
 }
@@ -863,13 +878,17 @@ pub fn coalesce_from<T: Into<EffectTimer>>(style: Style, timer: T) -> Effect {
 ///
 /// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/fade_to_fg.gif)
 ///
-/// ```no_compile
-/// // fade out blake by targeting the author fg color
-/// let c = Theme::quote().bg.expect("bg color to exist");
-/// let filter = CellFilter::FgColor(Theme::author().fg.unwrap());
+/// ```no_run
+/// use ratatui::prelude::Color;
+/// use tachyonfx::*;
+/// 
+/// let c = Color::from_u32(0x504945);
+/// let filter = CellFilter::FgColor(Color::from_u32(0xfabd2f));
 /// fx::fade_to_fg(c, (1000, Interpolation::CircOut))
 ///     .with_cell_selection(filter)
 /// ```
+///
+/// Fade out blake by targeting the author fg color.
 pub fn fade_to_fg<T: Into<EffectTimer>, C: Into<Color>>(
     fg: C,
     timer: T,
@@ -885,13 +904,16 @@ pub fn fade_to_fg<T: Into<EffectTimer>, C: Into<Color>>(
 ///
 /// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/fade_from_fg.gif)
 ///
-/// ```no_compile
-/// // fade in content, excluding borders, from the bg color
-/// let c = Theme::quote().bg.expect("bg color to exist");
+/// ```no_run
+/// use ratatui::prelude::{Color, Margin};
+/// use tachyonfx::*;
+///
+/// let c = Color::from_u32(0x504945);
 /// let filter = CellFilter::Inner(Margin::new(1, 1));
 /// fx::fade_from_fg(c, (1000, Interpolation::QuadInOut))
 ///     .with_cell_selection(filter)
 /// ```
+/// Fade in content, excluding borders, from the bg color.
 pub fn fade_from_fg<T: Into<EffectTimer>, C: Into<Color>>(
     fg: C,
     timer: T,
@@ -907,12 +929,15 @@ pub fn fade_from_fg<T: Into<EffectTimer>, C: Into<Color>>(
 ///
 /// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/fade_to.gif)
 ///
-/// ```no_compile
-/// // fade the entire area to the out-of-bounds color
-/// let c = Theme::oob_color();
+/// ```no_run
+/// use ratatui::prelude::Color;
+/// use tachyonfx::*;
+///
+/// let c = Color::from_u32(0x1d2021);
 /// fx::fade_to(c, c, (1000, Interpolation::CircOut))
 /// ```
 ///
+/// Fade the entire area to the out-of-bounds color.
 pub fn fade_to<T: Into<EffectTimer>, C: Into<Color>>(
     fg: C,
     bg: C,
@@ -929,11 +954,14 @@ pub fn fade_to<T: Into<EffectTimer>, C: Into<Color>>(
 ///
 /// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/fade_from.gif)
 ///
-/// ```no_compile
-/// // fade in the entire area from the out-of-bounds color
-/// let c = Theme::oob_color();
+/// ```no_run
+/// use ratatui::prelude::Color;
+/// use tachyonfx::*;
+/// let c = Color::from_u32(0x1d2021);
 /// fx::fade_from(c, c, (1000, Interpolation::CircOut))
 /// ```
+///
+/// fade in the entire area from the out-of-bounds color
 pub fn fade_from<T: Into<EffectTimer>, C: Into<Color>>(
     fg: C,
     bg: C,
@@ -1014,15 +1042,17 @@ pub fn delay<T: Into<EffectTimer>>(duration: T, effect: Effect) -> Effect {
 ///
 /// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/prolong_start.gif)
 ///
-/// ```no_compile
-/// let c = Theme::quote().bg.unwrap();
+/// ```no_run
+/// use ratatui::prelude::Color;
+/// use tachyonfx::*;
+///
+/// let c = Color::from_u32(0x504945);
 /// let timer = (500, Interpolation::CircOut);
 /// fx::prolong_start(timer, fx::fade_from_fg(c, timer))
 /// ```
 ///  This example holds the initial state of the fade effect for 500ms before starting the fade.
 ///
 /// ```
-/// use std::time::Duration;
 /// use ratatui::style::Color;
 /// use tachyonfx::{Effect, fx, EffectTimer, Interpolation};
 ///
@@ -1058,8 +1088,11 @@ pub fn prolong_start<T: Into<EffectTimer>>(duration: T, effect: Effect) -> Effec
 ///
 /// ![animation](https://raw.githubusercontent.com/junkdog/tachyonfx/development/docs/assets/prolong_start.gif)
 ///
-/// ```no_compile
-/// let c = Theme::quote().bg.unwrap();
+/// ```no_run
+/// use ratatui::prelude::Color;
+/// use tachyonfx::*;
+///
+/// let c = Color::from_u32(0x504945);
 /// let timer = (500, Interpolation::CircOut);
 /// fx::prolong_end(timer, fx::fade_to_fg(c, timer))
 /// ```
